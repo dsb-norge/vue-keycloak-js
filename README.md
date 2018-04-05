@@ -38,11 +38,11 @@ npm install dsb-vue-keycloak --save
 
 > `Vue.use(VueKeyCloak, [options])`
 
-Tell Vue to install the plugin, and optionally pass in a JavaScript object additional 
+Tell Vue to install the plugin, and optionally pass in a JavaScript object additional
 configuration.
 
 ```javascript
-import VueKeyCloak from 'dsb-vue-keycloak'
+import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
 
 Vue.use(VueKeyCloak)
 
@@ -112,7 +112,7 @@ This option is the parameter object for the `Keycloak.init` method.
 This option is a callback function that is executed once Keycloak has initialised and is ready. You can be sure
 that the Vue instance has a property called `$keycloak` in this function. See above for possible values.
 
-The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on 
+The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
 instatiation.
 
 One use case for this callback could be to instatiate and mount the Vue application. Then we are sure that the Keycloak
@@ -167,5 +167,5 @@ $ git clone https://github.com/dsb-norge/vue-keycloak-js.git
 $ npm version patch
 ```
 
-The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to 
+The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to
 the NPM registry
