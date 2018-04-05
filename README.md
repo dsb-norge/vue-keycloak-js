@@ -158,3 +158,14 @@ Vue.use(VueKeyCloak, {
   }
 })
 ```
+
+## Develop and deploy
+
+```bash
+$ git clone https://github.com/dsb-norge/vue-keycloak-js.git
+# Do some work, add and/or commit to git.
+$ npm version patch
+```
+
+The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to 
+the NPM registry
