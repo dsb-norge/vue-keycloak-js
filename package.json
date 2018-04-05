@@ -1,5 +1,5 @@
 {
-  "name": "vue-keycloak-js",
+  "name": "@dsb-norge/vue-keycloak-js",
   "version": "1.0.0",
   "author": "Nils Lien <nils.lien@gmail.com>",
   "description": "A Keycloak plugin for Vue >= 2.x",
