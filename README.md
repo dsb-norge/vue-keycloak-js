@@ -3,7 +3,8 @@ vue-keycloak plugin
 
 ## Introduction
 
-This plugin uses the official Keycloak JS adapter (https://github.com/keycloak/keycloak-js-bower)
+This plugin uses the official Keycloak JS adapter
+https://github.com/keycloak/keycloak-js-bower
 
 Please read the documentation:
 http://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
@@ -25,13 +26,13 @@ will be redirected back to the application and remain unauthenticated.
 ### Install using yarn
 
 ```
-yarn add dsb-vue-keycloak
+yarn add @dsb-norge/vue-keycloak-js
 ```
 
 ### Install using npm
 
 ```
-npm install dsb-vue-keycloak --save
+npm install @dsb-norge/vue-keycloak-js --save
 ```
 
 ## Usage
