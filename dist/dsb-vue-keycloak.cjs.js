@@ -1,4 +1,4 @@
-/* vue-keycloak-js v1.0.2 */
+/* vue-keycloak-js v1.0.3 */
 'use strict';
 
 function createCommonjsModule(fn, module) {
