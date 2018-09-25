@@ -22,7 +22,8 @@ export default {
           userName: null,
           fullName: null,
           token: null,
-          logoutFn: null
+          logoutFn: null,
+          loginFn: null,
         }
       }
     })
@@ -81,6 +82,7 @@ function init (config, watch, options) {
 
   function updateWatchVariables (isAuthenticated = false) {
     watch.authenticated = isAuthenticated
+    watch.loginFn = keycloak.login
     if (isAuthenticated) {
       watch.token = keycloak.token
       watch.userName = keycloak.tokenParsed['preferred_username']

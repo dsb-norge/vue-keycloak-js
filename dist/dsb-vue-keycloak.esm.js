@@ -1312,7 +1312,8 @@ var index = {
           userName: null,
           fullName: null,
           token: null,
-          logoutFn: null
+          logoutFn: null,
+          loginFn: null
         };
       }
     });
@@ -1373,6 +1374,7 @@ function init(config, watch, options) {
     var isAuthenticated = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
     watch.authenticated = isAuthenticated;
+    watch.loginFn = keycloak$$1.login;
     if (isAuthenticated) {
       watch.token = keycloak$$1.token;
       watch.userName = keycloak$$1.tokenParsed['preferred_username'];
