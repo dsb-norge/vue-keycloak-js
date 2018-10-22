@@ -56,13 +56,15 @@ This is actually a new Vue instance and can be used as such. It holds this data:
 
 ```
 {
-  ready: Boolean,         // Flag indicating whether Keycloak has initialised and is ready
+  ready: Boolean,            // Flag indicating whether Keycloak has initialised and is ready
   authenticated: Boolean,
-  userName: String,       // Username from Keycloak. Collected from tokenParsed['preferred_username']
-  fullName: String,       // Full name from Keycloak. Collected from tokenParsed['name']
-  logoutFn: Function,     // App+Keycloak logout function
-  loginFn: Function,      // App+Keycloak login function 
-  token: String,          // Access token
+  userName: String,          // Username from Keycloak. Collected from tokenParsed['preferred_username']
+  fullName: String,          // Full name from Keycloak. Collected from tokenParsed['name']
+  logoutFn: Function,        // App+Keycloak logout function
+  loginFn: Function,         // App+Keycloak login function 
+  createLoginUrl: Function,  // Keycloak createLoginUrl function
+  createLogoutUrl: Function, // Keycloak createLogoutUrl function
+  token: String,             // Access token
 }
 ```
 
