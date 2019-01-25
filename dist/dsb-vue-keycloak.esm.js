@@ -1,4 +1,4 @@
-/* vue-keycloak-js v1.0.5 */
+/* vue-keycloak-js v1.0.6 */
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
