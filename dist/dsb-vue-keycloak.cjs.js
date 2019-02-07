@@ -1355,7 +1355,9 @@ function init(config, watch, options) {
     // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
     // Refresh token if it's valid for less then 60 seconds
     var updateTokenInterval = setInterval(function () {
-      return keycloak$$1.updateToken(60);
+      return keycloak$$1.updateToken(60).error(function () {
+        keycloak$$1.clearToken();
+      });
     }, 10000);
     watch.logoutFn = function () {
       clearInterval(updateTokenInterval);

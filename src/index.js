@@ -64,7 +64,9 @@ function init (config, watch, options) {
   keycloak.onAuthSuccess = function () {
     // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
     // Refresh token if it's valid for less then 60 seconds
-    const updateTokenInterval = setInterval(() => keycloak.updateToken(60), 10000)
+    const updateTokenInterval = setInterval(() => keycloak.updateToken(60).error(() => {
+      keycloak.clearToken()
+    }), 10000)
     watch.logoutFn = () => {
       clearInterval(updateTokenInterval)
       keycloak.logout({
