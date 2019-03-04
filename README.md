@@ -1,6 +1,10 @@
 vue-keycloak plugin
 -------------------
 
+[![Known Vulnerabilities](https://snyk.io/test/github/dsb-norge/vue-keycloak-js/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dsb-norge/vue-keycloak-js?targetFile=package.json)
+![npm](https://img.shields.io/npm/v/@dsb-norge/vue-keycloak-js.svg?style=flat-square)
+![npm](https://img.shields.io/npm/dt/@dsb-norge/vue-keycloak-js.svg?style=flat-square)
+
 ## Introduction
 
 This plugin uses the official Keycloak JS adapter
