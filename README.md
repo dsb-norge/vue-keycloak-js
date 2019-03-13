@@ -66,10 +66,12 @@ This is actually a new Vue instance and can be used as such. It holds this data:
   userName: String,          // Username from Keycloak. Collected from tokenParsed['preferred_username']
   fullName: String,          // Full name from Keycloak. Collected from tokenParsed['name']
   logoutFn: Function,        // App+Keycloak logout function
-  loginFn: Function,         // App+Keycloak login function 
+  loginFn: Function,         // App+Keycloak login function
   createLoginUrl: Function,  // Keycloak createLoginUrl function
   createLogoutUrl: Function, // Keycloak createLogoutUrl function
-  token: String,             // Access token
+  hasRealmRole: Function,    // Keycloak hasRealmRole function
+  hasResourceRole: Function, // Keycloak hasResourceRole function
+  token: String              // Access token
 }
 ```
 

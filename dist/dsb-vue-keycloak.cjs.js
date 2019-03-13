@@ -1654,6 +1654,8 @@ function init(config, watch, options) {
     watch.createLoginUrl = keycloak$$1.createLoginUrl;
     watch.createLogoutUrl = keycloak$$1.createLogoutUrl;
     if (isAuthenticated) {
+      watch.hasRealmRole = keycloak$$1.hasRealmRole;
+      watch.hasResourceRole = keycloak$$1.hasResourceRole;
       watch.token = keycloak$$1.token;
       watch.userName = keycloak$$1.tokenParsed['preferred_username'];
       watch.fullName = keycloak$$1.tokenParsed['name'];

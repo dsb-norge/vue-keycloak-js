@@ -90,6 +90,8 @@ function init (config, watch, options) {
     watch.createLoginUrl = keycloak.createLoginUrl
     watch.createLogoutUrl = keycloak.createLogoutUrl
     if (isAuthenticated) {
+      watch.hasRealmRole = keycloak.hasRealmRole
+      watch.hasResourceRole = keycloak.hasResourceRole
       watch.token = keycloak.token
       watch.userName = keycloak.tokenParsed['preferred_username']
       watch.fullName = keycloak.tokenParsed['name']
