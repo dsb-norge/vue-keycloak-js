@@ -48,7 +48,10 @@ function init (config, watch, options) {
   const keycloak = Keycloak({
     'realm': config['authRealm'],
     'url': config['authUrl'],
-    'clientId': config['authClientId']
+    'clientId': config['authClientId'],
+    'credentials': {
+      'secret': config['authClientSecret']
+    }
   })
 
   watch.$once('ready', function (cb) {
