@@ -1,4 +1,4 @@
-/* vue-keycloak-js v1.0.9 */
+/* vue-keycloak-js v1.0.10 */
 'use strict';
 
 function createCommonjsModule(fn, module) {
@@ -1608,7 +1608,10 @@ function init(config, watch, options) {
   var keycloak$$1 = keycloak({
     'realm': config['authRealm'],
     'url': config['authUrl'],
-    'clientId': config['authClientId']
+    'clientId': config['authClientId'],
+    'credentials': {
+      'secret': config['authClientSecret']
+    }
   });
 
   watch.$once('ready', function (cb) {

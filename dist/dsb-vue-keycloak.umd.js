@@ -1,4 +1,4 @@
-/* vue-keycloak-js v1.0.9 */
+/* vue-keycloak-js v1.0.10 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -1612,7 +1612,10 @@ function init(config, watch, options) {
   var keycloak$$1 = keycloak({
     'realm': config['authRealm'],
     'url': config['authUrl'],
-    'clientId': config['authClientId']
+    'clientId': config['authClientId'],
+    'credentials': {
+      'secret': config['authClientSecret']
+    }
   });
 
   watch.$once('ready', function (cb) {
