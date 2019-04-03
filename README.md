@@ -103,6 +103,7 @@ The plugin then expects the return value to be an object with the following keys
   authRealm: String,
   authUrl: String,
   authClientId: String,
+  authClientSecret: String,
   logoutRedirectUri: String
 }
 ```
