@@ -71,7 +71,8 @@ This is actually a new Vue instance and can be used as such. It holds this data:
   createLogoutUrl: Function, // Keycloak createLogoutUrl function
   hasRealmRole: Function,    // Keycloak hasRealmRole function
   hasResourceRole: Function, // Keycloak hasResourceRole function
-  token: String              // Access token
+  token: String,             // The base64 encoded token that can be sent in the Authorization header in requests to services
+  tokenParsed: String        // The parsed token as a JavaScript object
 }
 ```
 
@@ -83,6 +84,7 @@ You can pass in an object as options to the plugin. The following keys are valid
 |---|---|---|
 | `config`|String &#124; Object|`window.__BASEURL__ + '/config'`
 |`init`|Object|`{onLoad: 'login-required'}`
+|`logout`|Object|`
 |`onReady`|Function(keycloak)|
 
 ### config
@@ -96,14 +98,18 @@ this a default place to make a GET request.
 
 If no `window.__BASEURL__` exists, `/config` is used.
 
-The plugin then expects the return value to be an object with the following keys and values:
+The return value from the request is used as constructor parameters for the Keycloak adapter.
+As such, it should be an object with valid keys/values.
+
+[See Keycloak's Javascript adapter reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference)
+
+E.g. 
 
 ```
 {
-  authRealm: String,
-  authUrl: String,
-  authClientId: String,
-  logoutRedirectUri: String
+  realm: String,
+  url: String,
+  clientId: String
 }
 ```
 
@@ -111,12 +117,16 @@ These values will be used as constructor parameters to the official Keycloak ada
 
 **Object**
 
-If this option is an object, the values will be passed as constructor parameters. The keys must have the same naming
-as above. No HTTP GET request is done in this case.
+If this option is an object, it will be passed on as constructor parameters for the [Keycloak adapter](https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference).
+No HTTP GET request is done in this case.
 
 ### init
 
 This option is the parameter object for the `Keycloak.init` method.
+
+### logout
+
+This option is the parameter object for the `Keycloak.logout` method.
 
 ### onReady
 

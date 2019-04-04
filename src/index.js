@@ -22,6 +22,7 @@ export default {
           userName: null,
           fullName: null,
           token: null,
+          tokenParsed: null,
           logoutFn: null,
           loginFn: null,
           createLoginUrl: null,
@@ -45,11 +46,7 @@ export default {
 }
 
 function init (config, watch, options) {
-  const keycloak = Keycloak({
-    'realm': config['authRealm'],
-    'url': config['authUrl'],
-    'clientId': config['authClientId']
-  })
+  const keycloak = Keycloak(config)
 
   watch.$once('ready', function (cb) {
     cb && cb()
@@ -69,9 +66,7 @@ function init (config, watch, options) {
     }), 10000)
     watch.logoutFn = () => {
       clearInterval(updateTokenInterval)
-      keycloak.logout({
-        'redirectUri': config['logoutRedirectUri']
-      })
+      keycloak.logout(options.logout)
     }
   }
   keycloak.onAuthRefreshSuccess = function () {
@@ -93,6 +88,7 @@ function init (config, watch, options) {
       watch.hasRealmRole = keycloak.hasRealmRole
       watch.hasResourceRole = keycloak.hasResourceRole
       watch.token = keycloak.token
+      watch.tokenParsed = keycloak.tokenParsed
       watch.userName = keycloak.tokenParsed['preferred_username']
       watch.fullName = keycloak.tokenParsed['name']
     }
