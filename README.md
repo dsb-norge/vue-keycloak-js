@@ -84,12 +84,34 @@ You can pass in an object as options to the plugin. The following keys are valid
 |---|---|---|
 | `config`|String &#124; Object|`window.__BASEURL__ + '/config'`
 |`init`|Object|`{onLoad: 'login-required'}`
-|`logout`|Object|`
+|`logout`|Object|
 |`onReady`|Function(keycloak)|
 
 ### config
 
-**String**
+**IMPORTANT NOTE**
+
+Currently, the plugin accepts a config object like this:
+
+```
+{
+  authRealm: String,
+  authUrl: String,
+  authClientId: String,
+  logoutRedirectUri: String
+}
+```
+
+**This will be deprecated in the next major release.**
+
+Thereafter, the config object, either returned from an endpoint (string) or
+set directly (object), must be compatible with the Keycloak JS adapter constructor arguments.
+
+The `logoutRedirectUri` must instead be defined in [`options.logout`](#logout)
+
+See description below.
+ 
+#### String
 
 If this option is a string, the plugin will treat it as an URL and make an HTTP GET request to it.
 
@@ -115,7 +137,7 @@ E.g.
 
 These values will be used as constructor parameters to the official Keycloak adapter.
 
-**Object**
+#### Object
 
 If this option is an object, it will be passed on as constructor parameters for the [Keycloak adapter](https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference).
 No HTTP GET request is done in this case.

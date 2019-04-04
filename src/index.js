@@ -46,7 +46,8 @@ export default {
 }
 
 function init (config, watch, options) {
-  const keycloak = Keycloak(config)
+  const ctor = sanitizeConfig(config)
+  const keycloak = Keycloak(ctor)
 
   watch.$once('ready', function (cb) {
     cb && cb()
@@ -66,7 +67,7 @@ function init (config, watch, options) {
     }), 10000)
     watch.logoutFn = () => {
       clearInterval(updateTokenInterval)
-      keycloak.logout(options.logout)
+      keycloak.logout(options.logout || {'redirectUri': config['logoutRedirectUri']})
     }
   }
   keycloak.onAuthRefreshSuccess = function () {
@@ -133,4 +134,21 @@ function getConfig (config) {
     }
     xhr.send()
   })
+}
+
+function sanitizeConfig(config) {
+  const renameProp = (oldProp, newProp, {[oldProp]: old, ...others}) => {
+    return {
+      [newProp]: old,
+      ...others
+    }
+  }
+  return Object.keys(config).reduce(function (previous, key) {
+    if (['authRealm', 'authUrl', 'authClientId'].includes(key)) {
+      const cleaned = key.replace('auth', '')
+      const newKey = cleaned.charAt(0).toLowerCase() + cleaned.slice(1)
+      return renameProp(key, newKey, previous)
+    }
+    return previous
+  }, config)
 }
