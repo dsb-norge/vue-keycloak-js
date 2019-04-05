@@ -1,5 +1,5 @@
 /*!
-  * vue-keycloak-js v1.0.9
+  * vue-keycloak-js v1.1.0
   * @license ISC
   */
 (function (global, factory) {
