@@ -1,4 +1,110 @@
-/* vue-keycloak-js v1.0.9 */
+/*!
+  * vue-keycloak-js v1.0.9
+  * @license ISC
+  */
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _toPrimitive(input, hint) {
+  if (typeof input !== "object" || input === null) return input;
+  var prim = input[Symbol.toPrimitive];
+
+  if (prim !== undefined) {
+    var res = prim.call(input, hint || "default");
+    if (typeof res !== "object") return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+
+  return (hint === "string" ? String : Number)(input);
+}
+
+function _toPropertyKey(arg) {
+  var key = _toPrimitive(arg, "string");
+
+  return typeof key === "symbol" ? key : String(key);
+}
+
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
@@ -21,7 +127,7 @@ var keycloak = createCommonjsModule(function (module) {
  * limitations under the License.
  */
 
-(function( window, undefined ) {
+(function( window, undefined$1 ) {
 
     var Keycloak = function (config) {
         if (!(this instanceof Keycloak)) {
@@ -347,7 +453,7 @@ var keycloak = createCommonjsModule(function (module) {
 
         kc.createAccountUrl = function(options) {
             var realm = getRealmUrl();
-            var url = undefined;
+            var url = undefined$1;
             if (typeof realm !== 'undefined') {
                 url = realm
                 + '/account'
@@ -551,7 +657,7 @@ var keycloak = createCommonjsModule(function (module) {
                     return kc.authServerUrl + '/realms/' + encodeURIComponent(kc.realm);
                 }
             } else {
-            	return undefined;
+            	return undefined$1;
             }
         }
 
@@ -1544,36 +1650,32 @@ var keycloak = createCommonjsModule(function (module) {
         }
     };
 
-    if ( 'object' === "object" && module && 'object' === "object" ) {
+    if ( module && 'object' === "object" ) {
         module.exports = Keycloak;
     } else {
         window.Keycloak = Keycloak;
 
-        if ( typeof undefined === "function" && undefined.amd ) {
-            undefined( "keycloak", [], function () { return Keycloak; } );
+        if ( typeof undefined$1 === "function" && undefined$1.amd ) {
+            undefined$1( "keycloak", [], function () { return Keycloak; } );
         }
     }
 })( window );
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var installed = false;
-
 var index = {
   install: function install(Vue) {
     var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
     if (installed) return;
     installed = true;
-
     var defaultParams = {
-      config: window.__BASEURL__ ? window.__BASEURL__ + '/config' : '/config',
-      init: { onLoad: 'login-required' }
+      config: window.__BASEURL__ ? "".concat(window.__BASEURL__, "/config") : '/config',
+      init: {
+        onLoad: 'login-required'
+      }
     };
     var options = Object.assign({}, defaultParams, params);
-    if (assertOptions(options).hasError) throw new Error('Invalid options given: ' + assertOptions(options).error);
-
+    if (assertOptions(options).hasError) throw new Error("Invalid options given: ".concat(assertOptions(options).error));
     var watch = new Vue({
       data: function data() {
         return {
@@ -1582,6 +1684,7 @@ var index = {
           userName: null,
           fullName: null,
           token: null,
+          tokenParsed: null,
           logoutFn: null,
           loginFn: null,
           createLoginUrl: null,
@@ -1603,60 +1706,62 @@ var index = {
 };
 
 function init(config, watch, options) {
-  var keycloak$$1 = keycloak({
-    'realm': config['authRealm'],
-    'url': config['authUrl'],
-    'clientId': config['authClientId']
-  });
-
+  var ctor = sanitizeConfig(config);
+  var keycloak$1 = keycloak(ctor);
   watch.$once('ready', function (cb) {
     cb && cb();
   });
+  keycloak$1.init(options.init);
 
-  keycloak$$1.init(options.init);
-  keycloak$$1.onReady = function (authenticated) {
+  keycloak$1.onReady = function (authenticated) {
     updateWatchVariables(authenticated);
     watch.ready = true;
-    typeof options.onReady === 'function' && watch.$emit('ready', options.onReady.bind(this, keycloak$$1));
+    typeof options.onReady === 'function' && watch.$emit('ready', options.onReady.bind(this, keycloak$1));
   };
-  keycloak$$1.onAuthSuccess = function () {
+
+  keycloak$1.onAuthSuccess = function () {
     // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
     // Refresh token if it's valid for less then 60 seconds
     var updateTokenInterval = setInterval(function () {
-      return keycloak$$1.updateToken(60).error(function () {
-        keycloak$$1.clearToken();
+      return keycloak$1.updateToken(60).error(function () {
+        keycloak$1.clearToken();
       });
     }, 10000);
+
     watch.logoutFn = function () {
       clearInterval(updateTokenInterval);
-      keycloak$$1.logout({
+      keycloak$1.logout(options.logout || {
         'redirectUri': config['logoutRedirectUri']
       });
     };
   };
-  keycloak$$1.onAuthRefreshSuccess = function () {
+
+  keycloak$1.onAuthRefreshSuccess = function () {
     updateWatchVariables(true);
   };
-  keycloak$$1.onAuthRefreshError = function () {
+
+  keycloak$1.onAuthRefreshError = function () {
     console.error('Error while trying to refresh the token');
   };
-  keycloak$$1.onAuthError = function (errorData) {
+
+  keycloak$1.onAuthError = function (errorData) {
     console.error('Error during authentication: ' + JSON.stringify(errorData));
   };
 
   function updateWatchVariables() {
     var isAuthenticated = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
     watch.authenticated = isAuthenticated;
-    watch.loginFn = keycloak$$1.login;
-    watch.createLoginUrl = keycloak$$1.createLoginUrl;
-    watch.createLogoutUrl = keycloak$$1.createLogoutUrl;
+    watch.loginFn = keycloak$1.login;
+    watch.createLoginUrl = keycloak$1.createLoginUrl;
+    watch.createLogoutUrl = keycloak$1.createLogoutUrl;
+
     if (isAuthenticated) {
-      watch.hasRealmRole = keycloak$$1.hasRealmRole;
-      watch.hasResourceRole = keycloak$$1.hasResourceRole;
-      watch.token = keycloak$$1.token;
-      watch.userName = keycloak$$1.tokenParsed['preferred_username'];
-      watch.fullName = keycloak$$1.tokenParsed['name'];
+      watch.hasRealmRole = keycloak$1.hasRealmRole;
+      watch.hasResourceRole = keycloak$1.hasResourceRole;
+      watch.token = keycloak$1.token;
+      watch.tokenParsed = keycloak$1.tokenParsed;
+      watch.userName = keycloak$1.tokenParsed['preferred_username'];
+      watch.fullName = keycloak$1.tokenParsed['name'];
     }
   }
 }
@@ -1667,14 +1772,26 @@ function assertOptions(options) {
       onReady = options.onReady;
 
   if (typeof config !== 'string' && !_isObject(config)) {
-    return { hasError: true, error: '\'config\' option must be a string or an object. Found: \'' + config + '\'' };
+    return {
+      hasError: true,
+      error: "'config' option must be a string or an object. Found: '".concat(config, "'")
+    };
   }
+
   if (!_isObject(init) || typeof init.onLoad !== 'string') {
-    return { hasError: true, error: '\'init\' option must be an object with an \'onLoad\' property. Found: \'' + init + '\'' };
+    return {
+      hasError: true,
+      error: "'init' option must be an object with an 'onLoad' property. Found: '".concat(init, "'")
+    };
   }
+
   if (onReady && typeof onReady !== 'function') {
-    return { hasError: true, error: '\'onReady\' option must be a function. Found: \'' + onReady + '\'' };
+    return {
+      hasError: true,
+      error: "'onReady' option must be a function. Found: '".concat(onReady, "'")
+    };
   }
+
   return {
     hasError: false,
     error: null
@@ -1682,7 +1799,7 @@ function assertOptions(options) {
 }
 
 function _isObject(obj) {
-  return obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && Object.prototype.toString.call(obj) !== '[object Array]';
+  return obj !== null && _typeof(obj) === 'object' && Object.prototype.toString.call(obj) !== '[object Array]';
 }
 
 function getConfig(config) {
@@ -1691,6 +1808,7 @@ function getConfig(config) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', config);
     xhr.setRequestHeader('Accept', 'application/json');
+
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -1700,8 +1818,28 @@ function getConfig(config) {
         }
       }
     };
+
     xhr.send();
   });
+}
+
+function sanitizeConfig(config) {
+  var renameProp = function renameProp(oldProp, newProp, _ref) {
+    var old = _ref[oldProp],
+        others = _objectWithoutProperties(_ref, [oldProp].map(_toPropertyKey));
+
+    return _objectSpread(_defineProperty({}, newProp, old), others);
+  };
+
+  return Object.keys(config).reduce(function (previous, key) {
+    if (['authRealm', 'authUrl', 'authClientId'].includes(key)) {
+      var cleaned = key.replace('auth', '');
+      var newKey = cleaned.charAt(0).toLowerCase() + cleaned.slice(1);
+      return renameProp(key, newKey, previous);
+    }
+
+    return previous;
+  }, config);
 }
 
 export default index;
