@@ -57,22 +57,43 @@ Vue.use(VueKeyCloak, options)
 ```
 
 The plugin adds a `$keycloak` property to the global Vue instance.
-This is actually a new Vue instance and can be used as such. It holds this data:
+This is actually a new Vue instance and can be used as such.
+It shadows most of the keycloak instance's properties and functions,
+with the exception of the callback events, which the plugin needs to control itself.
+
+These properties/functions are exposed:
 
 ```
 {
-  ready: Boolean,            // Flag indicating whether Keycloak has initialised and is ready
+  ready: Boolean,              // Flag indicating whether Keycloak has initialised and is ready
   authenticated: Boolean,
-  userName: String,          // Username from Keycloak. Collected from tokenParsed['preferred_username']
-  fullName: String,          // Full name from Keycloak. Collected from tokenParsed['name']
-  logoutFn: Function,        // App+Keycloak logout function
-  loginFn: Function,         // App+Keycloak login function
-  createLoginUrl: Function,  // Keycloak createLoginUrl function
-  createLogoutUrl: Function, // Keycloak createLogoutUrl function
-  hasRealmRole: Function,    // Keycloak hasRealmRole function
-  hasResourceRole: Function, // Keycloak hasResourceRole function
-  token: String,             // The base64 encoded token that can be sent in the Authorization header in requests to services
-  tokenParsed: String        // The parsed token as a JavaScript object
+  userName: String,            // Username from Keycloak. Collected from tokenParsed['preferred_username']
+  fullName: String,            // Full name from Keycloak. Collected from tokenParsed['name']
+  login: Function,             // [Keycloak] login function
+  loginFn: Function,           // Alias for login
+  logoutFn: Function,          // Keycloak logout function
+  createLoginUrl: Function,    // Keycloak createLoginUrl function
+  createLogoutUrl: Function,   // Keycloak createLogoutUrl function
+  createRegisterUrl: Function, // Keycloak createRegisterUrl function
+  register: Function,          // Keycloak register function
+  accountManagement: Function, // Keycloak accountManagement function
+  createAccountUrl: Function,  // Keycloak createAccountUrl function
+  loadUserProfile: Function,   // Keycloak loadUserProfile function
+  loadUserInfo: Function,      // Keycloak loadUserInfo function
+  subject: String,             // The user id
+  idToken: String,             // The base64 encoded ID token.
+  idTokenParsed: Object,       // The parsed id token as a JavaScript object.
+  realmAccess: Object,         // The realm roles associated with the token.
+  resourceAccess: Object,      // The resource roles associated with the token.
+  refreshToken: String,        // The base64 encoded refresh token that can be used to retrieve a new token.
+  refreshTokenParsed: Object,  // The parsed refresh token as a JavaScript object.
+  timeSkew: Number,            // The estimated time difference between the browser time and the Keycloak server in seconds. This value is just an estimation, but is accurate enough when determining if a token is expired or not.
+  responseMode: String,        // Response mode passed in init (default value is fragment).
+  responseType: String,        // Response type sent to Keycloak with login requests. This is determined based on the flow value used during initialization, but can be overridden by setting this value.
+  hasRealmRole: Function,      // Keycloak hasRealmRole function
+  hasResourceRole: Function,   // Keycloak hasResourceRole function
+  token: String,               // The base64 encoded token that can be sent in the Authorization header in requests to services
+  tokenParsed: String          // The parsed token as a JavaScript object
 }
 ```
 
@@ -156,9 +177,9 @@ This option is a callback function that is executed once Keycloak has initialise
 that the Vue instance has a property called `$keycloak` in this function. See above for possible values.
 
 The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
-instatiation.
+instantiation.
 
-One use case for this callback could be to instatiate and mount the Vue application. Then we are sure that the Keycloak
+One use case for this callback could be to instantiate and mount the Vue application. Then we are sure that the Keycloak
 authentication and the `$keycloak` property are properly finished and hydrated with data:
 
 ```javascript
@@ -176,7 +197,7 @@ Vue.use(VueKeyCloak, {
 })
 ```
 
-In conjuction with the above, you might find it useful to intercept e.g. axios and set the token on each request:
+In conjunction with the above, you might find it useful to intercept e.g. axios and set the token on each request:
 
 ```javascript
 function tokenInterceptor () {
@@ -201,6 +222,76 @@ Vue.use(VueKeyCloak, {
   }
 })
 ```
+
+## Examples
+
+### Supply a configuration object for the Keycloak constructor
+
+```javascript
+Vue.use(VueKeyCloak, {
+  config: {
+    realm: 'MyRealm',
+    url: 'https://my.keycloak.server/auth',
+    clientId: 'MyClientId'
+  },
+  onReady: kc => {
+    new Vue({
+      render: h => h(App)
+    }).$mount('#app')
+  }
+})
+```
+
+### Supply init option (disable monitoring login state)
+
+```javascript
+Vue.use(VueKeyCloak, {
+  init: {
+    onLoad: 'login-required',
+    checkLoginIframe: false
+  },
+  onReady: kc => {
+    new Vue({
+      render: h => h(App)
+    }).$mount('#app')
+  }
+})
+```
+
+### Supply init option (use `check-sso`)
+
+Remember; `login-required` is the default value for the onLoad property 
+in the init object. So without passing an `init` object as argument, the default is 
+`{ init: 'login-required' }`
+
+```javascript
+Vue.use(VueKeyCloak, {
+  init: {
+    onLoad: 'check-sso'
+  },
+  onReady: kc => {
+    new Vue({
+      render: h => h(App)
+    }).$mount('#app')
+  }
+})
+```
+
+### Specify a `redirectUri`
+
+```javascript
+Vue.use(VueKeyCloak, {
+  logout: {
+    redirectUri: 'https://mydomain.lives.here.com'
+  },
+  onReady: kc => {
+    new Vue({
+      render: h => h(App)
+    }).$mount('#app')
+  }
+})
+```
+
 
 ## Develop and deploy
 
