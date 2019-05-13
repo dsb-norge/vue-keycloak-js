@@ -25,8 +25,25 @@ export default {
           tokenParsed: null,
           logoutFn: null,
           loginFn: null,
+          login: null,
           createLoginUrl: null,
-          createLogoutUrl: null
+          createLogoutUrl: null,
+          createRegisterUrl: null,
+          register: null,
+          accountManagement: null,
+          createAccountUrl: null,
+          loadUserProfile: null,
+          loadUserInfo: null,
+          subject: null,
+          idToken: null,
+          idTokenParsed: null,
+          realmAccess: null,
+          resourceAccess: null,
+          refreshToken: null,
+          refreshTokenParsed: null,
+          timeSkew: null,
+          responseMode: null,
+          responseType: null
         }
       }
     })
@@ -73,22 +90,33 @@ function init (config, watch, options) {
   keycloak.onAuthRefreshSuccess = function () {
     updateWatchVariables(true)
   }
-  keycloak.onAuthRefreshError = function () {
-    console.error('Error while trying to refresh the token')
-  }
-  keycloak.onAuthError = function (errorData) {
-    console.error('Error during authentication: ' + JSON.stringify(errorData));
-  }
 
   function updateWatchVariables (isAuthenticated = false) {
     watch.authenticated = isAuthenticated
     watch.loginFn = keycloak.login
+    watch.login = keycloak.login
     watch.createLoginUrl = keycloak.createLoginUrl
     watch.createLogoutUrl = keycloak.createLogoutUrl
+    watch.createRegisterUrl = keycloak.createRegisterUrl
+    watch.register = keycloak.register
     if (isAuthenticated) {
+      watch.accountManagement = keycloak.accountManagement
+      watch.createAccountUrl = keycloak.createAccountUrl
       watch.hasRealmRole = keycloak.hasRealmRole
       watch.hasResourceRole = keycloak.hasResourceRole
+      watch.loadUserProfile = keycloak.loadUserProfile
+      watch.loadUserInfo = keycloak.loadUserInfo
       watch.token = keycloak.token
+      watch.subject = keycloak.subject
+      watch.idToken = keycloak.idToken
+      watch.idTokenParsed = keycloak.idTokenParsed
+      watch.realmAccess = keycloak.realmAccess
+      watch.resourceAccess = keycloak.resourceAccess
+      watch.refreshToken = keycloak.refreshToken
+      watch.refreshTokenParsed = keycloak.refreshTokenParsed
+      watch.timeSkew = keycloak.timeSkew
+      watch.responseMode = keycloak.responseMode
+      watch.responseType = keycloak.responseType
       watch.tokenParsed = keycloak.tokenParsed
       watch.userName = keycloak.tokenParsed['preferred_username']
       watch.fullName = keycloak.tokenParsed['name']
