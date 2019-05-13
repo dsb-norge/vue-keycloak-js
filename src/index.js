@@ -43,7 +43,9 @@ export default {
           refreshTokenParsed: null,
           timeSkew: null,
           responseMode: null,
-          responseType: null
+          responseType: null,
+          hasRealmRole: null,
+          hasResourceRole: null
         }
       }
     })
