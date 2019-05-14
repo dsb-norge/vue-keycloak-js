@@ -292,6 +292,11 @@ Vue.use(VueKeyCloak, {
 })
 ```
 
+### Example application
+
+View a complete example app, with router guards:
+
+[hello-keycloak](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples)
 
 ## Develop and deploy
 
