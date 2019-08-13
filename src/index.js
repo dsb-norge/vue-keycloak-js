@@ -73,6 +73,9 @@ function init (config, watch, options) {
   })
 
   keycloak.init(options.init)
+    .error(err => {
+      typeof options.onInitError === 'function' && options.onInitError(err)
+    })
   keycloak.onReady = function (authenticated) {
     updateWatchVariables(authenticated)
     watch.ready = true
@@ -127,7 +130,7 @@ function init (config, watch, options) {
 }
 
 function assertOptions (options) {
-  const {config, init, onReady} = options
+  const {config, init, onReady, onInitError} = options
   if (typeof config !== 'string' && !_isObject(config)) {
     return {hasError: true, error: `'config' option must be a string or an object. Found: '${config}'`}
   }
@@ -136,6 +139,9 @@ function assertOptions (options) {
   }
   if (onReady && typeof onReady !== 'function') {
     return {hasError: true, error: `'onReady' option must be a function. Found: '${onReady}'`}
+  }
+  if (onInitError && typeof onInitError !== 'function') {
+    return {hasError: true, error: `'onInitError' option must be a function. Found: '${onInitError}'`}
   }
   return {
     hasError: false,
