@@ -72,10 +72,6 @@ function init (config, watch, options) {
     cb && cb()
   })
 
-  keycloak.init(options.init)
-    .error(err => {
-      typeof options.onInitError === 'function' && options.onInitError(err)
-    })
   keycloak.onReady = function (authenticated) {
     updateWatchVariables(authenticated)
     watch.ready = true
@@ -95,6 +91,10 @@ function init (config, watch, options) {
   keycloak.onAuthRefreshSuccess = function () {
     updateWatchVariables(true)
   }
+  keycloak.init(options.init)
+    .error(err => {
+      typeof options.onInitError === 'function' && options.onInitError(err)
+    })
 
   function updateWatchVariables (isAuthenticated = false) {
     watch.authenticated = isAuthenticated
