@@ -107,6 +107,7 @@ You can pass in an object as options to the plugin. The following keys are valid
 |`init`|Object|`{onLoad: 'login-required'}`
 |`logout`|Object|
 |`onReady`|Function(keycloak)|
+|`onInitError`|Function(error)|
 
 ### config
 
@@ -222,6 +223,13 @@ Vue.use(VueKeyCloak, {
   }
 })
 ```
+
+### onInitError
+
+This option is a callback function that is executed if Keycloak initialisation has failed.
+
+The callback function has one parameter, which is the error object returned by Keycloak. Note that this may be undefined
+even though an error has occurred, as Keycloak does not return an error object in every error case.
 
 ## Examples
 
