@@ -316,3 +316,13 @@ $ npm version patch
 
 The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to
 the NPM registry
+
+## Frequently asked questions
+
+We try to answer the most frequently asked questions here.
+
+### How can I specify client secret?
+
+Short answer: You should not.
+
+For some mysterious reasons, there is undocumented support for it in the Keycloak Javascript Adapter, but it makes little sense to use it. The secret must be present in the browser, and is therefore no longer a secret. See [issue 22](https://github.com/dsb-norge/vue-keycloak-js/issues/22).
