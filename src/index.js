@@ -49,14 +49,14 @@ export default {
         }
       }
     })
+    Object.defineProperty(Vue.prototype, '$keycloak', {
+      get () {
+        return watch
+      }
+    })
     getConfig(options.config)
       .then(config => {
         init(config, watch, options)
-        Object.defineProperty(Vue.prototype, '$keycloak', {
-          get () {
-            return watch
-          }
-        })
       })
       .catch(err => {
         console.log(err)
