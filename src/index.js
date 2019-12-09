@@ -91,6 +91,9 @@ function init (config, watch, options) {
   keycloak.onAuthRefreshSuccess = function () {
     updateWatchVariables(true)
   }
+  keycloak.onAuthLogout = function () {
+    updateWatchVariables(false)
+  }
   keycloak.init(options.init)
     .error(err => {
       typeof options.onInitError === 'function' && options.onInitError(err)
