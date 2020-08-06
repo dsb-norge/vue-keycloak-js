@@ -6,10 +6,10 @@ import pkg from './package.json'
 const version = process.env.VERSION || require('./package.json').version
 const banner =
 `/*!
-  * vue-keycloak-js v${version}
+  * vue-keycloak-ts v${version}
   * @license ISC
   */`
-const name = 'dsb-vue-keycloak'
+const name = 'caassis-vue-keycloak'
 
 // CommonJS (for Node), ES module (for bundlers) and browser-friendly UMD build.
 export default {

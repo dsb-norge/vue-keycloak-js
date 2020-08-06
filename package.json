@@ -1,26 +1,27 @@
 {
-  "name": "@dsb-norge/vue-keycloak-js",
-  "version": "1.1.2",
-  "author": "Nils Lien <nils.lien@gmail.com>",
-  "description": "A Keycloak plugin for Vue >= 2.x",
-  "main": "dist/dsb-vue-keycloak.cjs.js",
-  "module": "dist/dsb-vue-keycloak.esm.js",
-  "browser": "dist/dsb-vue-keycloak.umd.js",
+  "name": "@caassis/vue-keycloak-ts",
+  "version": "2.0.0",
+  "author": "Mathieu Debove <mathieu@debove.dev>",
+  "description": "A Keycloak plugin for Vue >= 2.x with Typescript support",
+  "main": "dist/caassis-vue-keycloak.cjs.js",
+  "module": "dist/caassis-vue-keycloak.esm.js",
+  "browser": "dist/caassis-vue-keycloak.umd.js",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git@github.com:dsb-norge/vue-keycloak-js.git"
+    "url": "git@github.com:caassis/vue-keycloak-ts.git"
   },
   "bugs": {
-    "url": "https://github.com/dsb-norge/vue-keycloak-js/issues"
+    "url": "https://github.com/caassis/vue-keycloak-ts/issues"
   },
-  "homepage": "https://github.com/dsb-norge/vue-keycloak-js",
+  "homepage": "https://github.com/caassis/vue-keycloak-ts",
   "dependencies": {
-    "keycloak-js": "4.8.3"
+    "keycloak-js": "11.0.0"
   },
   "keywords": [
     "vue",
-    "keycloak"
+    "keycloak",
+    "typescript"
   ],
   "devDependencies": {
     "@babel/core": "^7.4.3",

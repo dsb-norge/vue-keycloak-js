@@ -1,15 +1,14 @@
 vue-keycloak plugin
 -------------------
 
-[![Known Vulnerabilities](https://snyk.io/test/github/dsb-norge/vue-keycloak-js/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dsb-norge/vue-keycloak-js?targetFile=package.json)
-![npm](https://img.shields.io/npm/v/@dsb-norge/vue-keycloak-js.svg?style=flat-square)
-![npm](https://img.shields.io/npm/dt/@dsb-norge/vue-keycloak-js.svg?style=flat-square)
-![NPM](https://img.shields.io/npm/l/@dsb-norge/vue-keycloak-js.svg?style=flat-square)
+[![Known Vulnerabilities](https://snyk.io/test/github/caassis/vue-keycloak-ts/badge.svg?targetFile=package.json)](https://snyk.io/test/github/caassis/vue-keycloak-ts?targetFile=package.json)
+![npm](https://img.shields.io/npm/v/@caassis/vue-keycloak-ts.svg?style=flat-square)
+![npm](https://img.shields.io/npm/dt/@caassis/vue-keycloak-ts.svg?style=flat-square)
+![NPM](https://img.shields.io/npm/l/@caassis/vue-keycloak-ts.svg?style=flat-square)
 
 ## Introduction
 
-This plugin uses the official Keycloak JS adapter
-https://github.com/keycloak/keycloak-js-bower
+This plugin uses the [official Keycloak JS adapter](https://github.com/keycloak/keycloak/blob/master/adapters/oidc/js/src/main/resources/keycloak.js)
 
 Please read the documentation:
 http://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
@@ -31,13 +30,13 @@ will be redirected back to the application and remain unauthenticated.
 ### Install using yarn
 
 ```
-yarn add @dsb-norge/vue-keycloak-js
+yarn add @caassis/vue-keycloak-ts
 ```
 
 ### Install using npm
 
 ```
-npm install @dsb-norge/vue-keycloak-js --save
+npm install @caassis/vue-keycloak-ts --save
 ```
 
 ## Usage
@@ -48,7 +47,7 @@ Tell Vue to install the plugin, and optionally pass in a JavaScript object addit
 configuration.
 
 ```javascript
-import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
+import VueKeyCloak from '@caassis/vue-keycloak-ts'
 
 Vue.use(VueKeyCloak)
 
@@ -132,7 +131,7 @@ set directly (object), must be compatible with the Keycloak JS adapter construct
 The `logoutRedirectUri` must instead be defined in [`options.logout`](#logout)
 
 See description below.
- 
+
 #### String
 
 If this option is a string, the plugin will treat it as an URL and make an HTTP GET request to it.
@@ -147,7 +146,7 @@ As such, it should be an object with valid keys/values.
 
 [See Keycloak's Javascript adapter reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference)
 
-E.g. 
+E.g.
 
 ```
 {
@@ -268,8 +267,8 @@ Vue.use(VueKeyCloak, {
 
 ### Supply init option (use `check-sso`)
 
-Remember; `login-required` is the default value for the onLoad property 
-in the init object. So without passing an `init` object as argument, the default is 
+Remember; `login-required` is the default value for the onLoad property
+in the init object. So without passing an `init` object as argument, the default is
 `{ init: 'login-required' }`
 
 ```javascript
@@ -304,27 +303,15 @@ Vue.use(VueKeyCloak, {
 
 View a complete example app, with router guards:
 
-[hello-keycloak](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples)
+[hello-keycloak](https://github.com/caassis/vue-keycloak-ts/tree/master/examples)
 
 ## Develop and deploy
 
 ```bash
-$ git clone https://github.com/dsb-norge/vue-keycloak-js.git
+$ git clone https://github.com/caassis/vue-keycloak-ts.git
 # Do some work, add and/or commit to git.
 $ npm version patch
 ```
 
 The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to
 the NPM registry
-
-## Frequently asked questions
-
-We try to answer the most frequently asked questions here.
-
-### How can I specify client secret?
-
-Short answer: You should not.
-
-For some mysterious reasons, there is undocumented support for it in the Keycloak Javascript Adapter, but it makes little sense to use it. The secret must be present in the browser, and is therefore no longer a secret. See [issue 22](https://github.com/dsb-norge/vue-keycloak-js/issues/22).
-
-The client secret is [removed from Keycloak 8.0](https://www.keycloak.org/docs/latest/release_notes/index.html#credentials-support-removed-from-the-javascript-adapter).

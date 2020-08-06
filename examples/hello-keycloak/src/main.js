@@ -1,4 +1,4 @@
-import VueKeycloakJs from '@dsb-norge/vue-keycloak-js'
+import VueKeycloakJs from '@caassis/vue-keycloak-ts'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'

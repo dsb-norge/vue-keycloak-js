@@ -1,4 +1,4 @@
-# vue-keycloak-js example
+# vue-keycloak-ts example
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ This is beyond the scope of this example.
 
 ## Run the example
 
-1. `git clone https://github.com/dsb-norge/vue-keycloak-js.git`
-2. `cd vue-keycloak-js/examples/hello-keycloak`
+1. `git clone https://github.com/caassis/vue-keycloak-ts.git`
+2. `cd vue-keycloak-ts/examples/hello-keycloak`
 3. `npm install`
 4. `npm run serve`
