@@ -91,6 +91,10 @@ function init (config, watch, options) {
   keycloak.onAuthRefreshSuccess = function () {
     updateWatchVariables(true)
   }
+  keycloak.onAuthRefreshError = function () {
+    updateWatchVariables(false)
+    typeof options.onAuthRefreshError === 'function' && options.onAuthRefreshError.bind(this, keycloak)()
+  }
   keycloak.init(options.init)
     .error(err => {
       typeof options.onInitError === 'function' && options.onInitError(err)
@@ -130,7 +134,7 @@ function init (config, watch, options) {
 }
 
 function assertOptions (options) {
-  const {config, init, onReady, onInitError} = options
+  const {config, init, onReady, onInitError, onAuthRefreshError} = options
   if (typeof config !== 'string' && !_isObject(config)) {
     return {hasError: true, error: `'config' option must be a string or an object. Found: '${config}'`}
   }
@@ -142,6 +146,9 @@ function assertOptions (options) {
   }
   if (onInitError && typeof onInitError !== 'function') {
     return {hasError: true, error: `'onInitError' option must be a function. Found: '${onInitError}'`}
+  }
+  if (onAuthRefreshError && typeof onAuthRefreshError !== 'function') {
+    return {hasError: true, error: `'onAuthRefreshError' option must be a function. Found: '${onAuthRefreshError}'`}
   }
   return {
     hasError: false,
