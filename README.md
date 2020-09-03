@@ -132,7 +132,7 @@ set directly (object), must be compatible with the Keycloak JS adapter construct
 The `logoutRedirectUri` must instead be defined in [`options.logout`](#logout)
 
 See description below.
- 
+
 #### String
 
 If this option is a string, the plugin will treat it as an URL and make an HTTP GET request to it.
@@ -147,7 +147,7 @@ As such, it should be an object with valid keys/values.
 
 [See Keycloak's Javascript adapter reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference)
 
-E.g. 
+E.g.
 
 ```
 {
@@ -268,8 +268,8 @@ Vue.use(VueKeyCloak, {
 
 ### Supply init option (use `check-sso`)
 
-Remember; `login-required` is the default value for the onLoad property 
-in the init object. So without passing an `init` object as argument, the default is 
+Remember; `login-required` is the default value for the onLoad property
+in the init object. So without passing an `init` object as argument, the default is
 `{ init: 'login-required' }`
 
 ```javascript
