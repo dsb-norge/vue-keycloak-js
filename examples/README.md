@@ -5,7 +5,8 @@
 You must have a Keycloak server running somewhere, with the correct
 setup, eg. `redirectUri`, `clientId`, `realm` etc.
 
-This is beyond the scope of this example.
+Or you could run: `docker-compose up` in this directory and get a temporary working
+keycloak instance. You need to register a new user on the initial login
 
 ## Run the example
 
