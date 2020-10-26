@@ -88,9 +88,14 @@ function init (config, watch, options) {
     updateWatchVariables(false)
     typeof options.onAuthRefreshError === 'function' && options.onAuthRefreshError(keycloak)
   }
-  keycloak.init(options.init)
-  .catch(err => {
-    typeof options.onInitError === 'function' && options.onInitError(err)
+  keycloak.init(options.init).then((authenticated) => {
+    updateWatchVariables(authenticated)
+    typeof options.onInitSuccess === 'function' && options.onInitSuccess(authenticated)
+  }).catch(() => {
+    // Keycloak does not return any error message
+    updateWatchVariables(false)
+    const error = Error('Could not initialized keycloak-js adapter')
+    typeof options.onInitError === 'function' ? options.onInitError(error) : console.error(error)
   })
 
   function updateWatchVariables (isAuthenticated = false) {
