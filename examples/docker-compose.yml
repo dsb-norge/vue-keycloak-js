@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+
+  keycloak:
+    # Redhat-sso 7.4 uses keycloak 9.0.5. However that version does not have a docker tag. so using 9.0.3
+    # https://access.redhat.com/articles/2342881#rhsso74
+    image: jboss/keycloak:9.0.3
+    ports:
+      - "8085:8080"
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/vue_realm.json
+    volumes:
+      - "./vue_realm.json:/tmp/vue_realm.json"

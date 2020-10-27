@@ -57,9 +57,9 @@ Vue.use(VueKeyCloak, options)
 ```
 
 The plugin adds a `$keycloak` property to the global Vue instance.
-This is actually a new Vue instance and can be used as such.
-It shadows most of the keycloak instance's properties and functions,
-with the exception of the callback events, which the plugin needs to control itself.
+This is actually a [Vue.observable](https://vuejs.org/v2/api/#Vue-observable) instance and can be used as such.
+It shadows most of the keycloak instance's properties and functions. All other variables & functions can be found
+on `$keycloak.keycloak` attribute
 
 These properties/functions are exposed:
 
@@ -94,6 +94,7 @@ These properties/functions are exposed:
   hasResourceRole: Function,   // Keycloak hasResourceRole function
   token: String,               // The base64 encoded token that can be sent in the Authorization header in requests to services
   tokenParsed: String          // The parsed token as a JavaScript object
+  keycloak: Object             // The original keycloak instance 'as is' from keycloak-js adapter
 }
 ```
 
@@ -127,7 +128,7 @@ Currently, the plugin accepts a config object like this:
 **This will be deprecated in the next major release.**
 
 Thereafter, the config object, either returned from an endpoint (string) or
-set directly (object), must be compatible with the Keycloak JS adapter constructor arguments.
+set directly (object), must be compatible with the [Keycloak JS adapter](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter) constructor arguments.
 
 The `logoutRedirectUri` must instead be defined in [`options.logout`](#logout)
 
@@ -272,6 +273,21 @@ Remember; `login-required` is the default value for the onLoad property
 in the init object. So without passing an `init` object as argument, the default is
 `{ init: 'login-required' }`
 
+
+##### To avoid waiting for configuration endpoint before loading vue app:
+```javascript
+Vue.use(VueKeyCloak, {
+  init: {
+    onLoad: 'check-sso'
+  }
+})
+
+new Vue({
+  render: h => h(App)
+}).$mount('#app')
+```
+
+##### Wait until keycloak adapter is ready before loading vue app:
 ```javascript
 Vue.use(VueKeyCloak, {
   init: {

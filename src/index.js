@@ -9,58 +9,55 @@ export default {
 
     const defaultParams = {
       config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
-      init: {onLoad: 'login-required'}
+      init: { onLoad: 'login-required' }
     }
     const options = Object.assign({}, defaultParams, params)
     if (assertOptions(options).hasError) throw new Error(`Invalid options given: ${assertOptions(options).error}`)
 
-    const watch = new Vue({
-      data () {
-        return {
-          ready: false,
-          authenticated: false,
-          userName: null,
-          fullName: null,
-          token: null,
-          tokenParsed: null,
-          logoutFn: null,
-          loginFn: null,
-          login: null,
-          createLoginUrl: null,
-          createLogoutUrl: null,
-          createRegisterUrl: null,
-          register: null,
-          accountManagement: null,
-          createAccountUrl: null,
-          loadUserProfile: null,
-          loadUserInfo: null,
-          subject: null,
-          idToken: null,
-          idTokenParsed: null,
-          realmAccess: null,
-          resourceAccess: null,
-          refreshToken: null,
-          refreshTokenParsed: null,
-          timeSkew: null,
-          responseMode: null,
-          responseType: null,
-          hasRealmRole: null,
-          hasResourceRole: null
-        }
+    const watch = Vue.observable({
+      ready: false,
+      authenticated: false,
+      userName: null,
+      fullName: null,
+      token: null,
+      tokenParsed: null,
+      logoutFn: null,
+      loginFn: null,
+      login: null,
+      createLoginUrl: null,
+      createLogoutUrl: null,
+      createRegisterUrl: null,
+      register: null,
+      accountManagement: null,
+      createAccountUrl: null,
+      loadUserProfile: null,
+      loadUserInfo: null,
+      subject: null,
+      idToken: null,
+      idTokenParsed: null,
+      realmAccess: null,
+      resourceAccess: null,
+      refreshToken: null,
+      refreshTokenParsed: null,
+      timeSkew: null,
+      responseMode: null,
+      responseType: null,
+      hasRealmRole: null,
+      hasResourceRole: null,
+      keycloak: null
+    })
+    Object.defineProperty(Vue.prototype, '$keycloak', {
+      get () {
+        return watch
       }
     })
     getConfig(options.config)
-      .then(config => {
-        init(config, watch, options)
-        Object.defineProperty(Vue.prototype, '$keycloak', {
-          get () {
-            return watch
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    .then(config => {
+      init(config, watch, options)
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 }
 
@@ -68,14 +65,10 @@ function init (config, watch, options) {
   const ctor = sanitizeConfig(config)
   const keycloak = Keycloak(ctor)
 
-  watch.$once('ready', function (cb) {
-    cb && cb()
-  })
-
   keycloak.onReady = function (authenticated) {
     updateWatchVariables(authenticated)
     watch.ready = true
-    typeof options.onReady === 'function' && watch.$emit('ready', options.onReady.bind(this, keycloak))
+    typeof options.onReady === 'function' && options.onReady(keycloak)
   }
   keycloak.onAuthSuccess = function () {
     // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
@@ -85,7 +78,7 @@ function init (config, watch, options) {
     }), 10000)
     watch.logoutFn = () => {
       clearInterval(updateTokenInterval)
-      keycloak.logout(options.logout || {'redirectUri': config['logoutRedirectUri']})
+      keycloak.logout(options.logout || { 'redirectUri': config['logoutRedirectUri'] })
     }
   }
   keycloak.onAuthRefreshSuccess = function () {
@@ -93,12 +86,17 @@ function init (config, watch, options) {
   }
   keycloak.onAuthRefreshError = function () {
     updateWatchVariables(false)
-    typeof options.onAuthRefreshError === 'function' && options.onAuthRefreshError.bind(this, keycloak)()
+    typeof options.onAuthRefreshError === 'function' && options.onAuthRefreshError(keycloak)
   }
-  keycloak.init(options.init)
-    .catch(err => {
-      typeof options.onInitError === 'function' && options.onInitError(err)
-    })
+  keycloak.init(options.init).then((authenticated) => {
+    updateWatchVariables(authenticated)
+    typeof options.onInitSuccess === 'function' && options.onInitSuccess(authenticated)
+  }).catch(() => {
+    // Keycloak does not return any error message
+    updateWatchVariables(false)
+    const error = Error('Could not initialized keycloak-js adapter')
+    typeof options.onInitError === 'function' ? options.onInitError(error) : console.error(error)
+  })
 
   function updateWatchVariables (isAuthenticated = false) {
     watch.authenticated = isAuthenticated
@@ -108,6 +106,7 @@ function init (config, watch, options) {
     watch.createLogoutUrl = keycloak.createLogoutUrl
     watch.createRegisterUrl = keycloak.createRegisterUrl
     watch.register = keycloak.register
+    watch.keycloak = keycloak
     if (isAuthenticated) {
       watch.accountManagement = keycloak.accountManagement
       watch.createAccountUrl = keycloak.createAccountUrl
@@ -134,21 +133,21 @@ function init (config, watch, options) {
 }
 
 function assertOptions (options) {
-  const {config, init, onReady, onInitError, onAuthRefreshError} = options
+  const { config, init, onReady, onInitError, onAuthRefreshError } = options
   if (typeof config !== 'string' && !_isObject(config)) {
-    return {hasError: true, error: `'config' option must be a string or an object. Found: '${config}'`}
+    return { hasError: true, error: `'config' option must be a string or an object. Found: '${config}'` }
   }
   if (!_isObject(init) || typeof init.onLoad !== 'string') {
-    return {hasError: true, error: `'init' option must be an object with an 'onLoad' property. Found: '${init}'`}
+    return { hasError: true, error: `'init' option must be an object with an 'onLoad' property. Found: '${init}'` }
   }
   if (onReady && typeof onReady !== 'function') {
-    return {hasError: true, error: `'onReady' option must be a function. Found: '${onReady}'`}
+    return { hasError: true, error: `'onReady' option must be a function. Found: '${onReady}'` }
   }
   if (onInitError && typeof onInitError !== 'function') {
-    return {hasError: true, error: `'onInitError' option must be a function. Found: '${onInitError}'`}
+    return { hasError: true, error: `'onInitError' option must be a function. Found: '${onInitError}'` }
   }
   if (onAuthRefreshError && typeof onAuthRefreshError !== 'function') {
-    return {hasError: true, error: `'onAuthRefreshError' option must be a function. Found: '${onAuthRefreshError}'`}
+    return { hasError: true, error: `'onAuthRefreshError' option must be a function. Found: '${onAuthRefreshError}'` }
   }
   return {
     hasError: false,
@@ -179,8 +178,8 @@ function getConfig (config) {
   })
 }
 
-function sanitizeConfig(config) {
-  const renameProp = (oldProp, newProp, {[oldProp]: old, ...others}) => {
+function sanitizeConfig (config) {
+  const renameProp = (oldProp, newProp, { [oldProp]: old, ...others }) => {
     return {
       [newProp]: old,
       ...others

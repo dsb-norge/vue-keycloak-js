@@ -12,15 +12,14 @@ Vue.use(VueKeycloakJs, {
     onLoad: 'check-sso'
   },
   config: {
-    url: 'https://mykeycloak-server.com/auth',
-    clientId: 'MyClientId',
-    realm: 'MyRealm'
-  },
-  onReady: (keycloak) => {
-    new Vue({
-      router,
-      render: h => h(App)
-    }).$mount('#app')
+    url: 'http://localhost:8085/auth',
+    clientId: 'vue-client',
+    realm: 'vue'
   }
 })
+
+new Vue({
+  router,
+  render: h => h(App)
+}).$mount('#app')
 
