@@ -6,6 +6,7 @@ import router from './router'
 Vue.config.productionTip = false
 
 Vue.use(VueKeycloakJs, {
+  loadFromKeycloak: 'http://localhost:8085/auth/js/keycloak.js',
   init: {
     // Use 'login-required' to always require authentication
     // If using 'login-required', there is no need for the router guards in router.js

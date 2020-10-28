@@ -15,9 +15,9 @@ const name = 'dsb-vue-keycloak'
 export default {
   input: 'src/index.js',
   output: [
-    { file: pkg.main, format: 'cjs', banner, name },
-    { file: pkg.module, format: 'es', banner, name },
-    { file: pkg.browser, format: 'umd', banner, name }
+    { file: pkg.main, format: 'cjs', banner, name, inlineDynamicImports: true },
+    { file: pkg.module, format: 'es', banner, name, inlineDynamicImports: true },
+    { file: pkg.browser, format: 'umd', banner, name, inlineDynamicImports: true }
   ],
   plugins: [
     resolve(), // so Rollup can find `keycloak-js`

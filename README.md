@@ -109,6 +109,7 @@ You can pass in an object as options to the plugin. The following keys are valid
 |`logout`|Object|
 |`onReady`|Function(keycloak)|
 |`onInitError`|Function(error)|
+|`loadFromKeycloak`|String|
 
 ### config
 
@@ -232,6 +233,25 @@ This option is a callback function that is executed if Keycloak initialisation h
 The callback function has one parameter, which is the error object returned by Keycloak. Note that this may be undefined
 even though an error has occurred, as Keycloak does not return an error object in every error case.
 
+### loadFromKeycloak
+
+This option allows you to load the module from keycloak/CDN itself. Which would allow you to always use
+the same version of keycloak-js as your version of keycloak. This is described in the keycloak doc: https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
+
+```
+The library can be retrieved directly from the Keycloak server at /auth/js/keycloak.js and
+is also distributed as a ZIP archive.
+
+A best practice is to load the JavaScript adapter directly from Keycloak Server as it will
+automatically be updated when you upgrade the server. If you copy the adapter to your
+web application instead, make sure you upgrade the adapter only after you have
+upgraded the server.
+```
+
+This could be a relative path or a direct path to your keycloak instance
+
+Example: `https://keycloak-hostname.com/auth/js/keycloak.js`
+
 ## Examples
 
 ### Supply a configuration object for the Keycloak constructor
@@ -314,6 +334,22 @@ Vue.use(VueKeyCloak, {
     }).$mount('#app')
   }
 })
+```
+
+
+### Using keycloak-js adapter from your keycloak server
+
+```javascript
+Vue.use(VueKeyCloak, {
+  loadFromKeycloak: 'https://keycloak-hostname.com/auth/js/keycloak.js',
+  init: {
+    onLoad: 'check-sso'
+  }
+})
+
+new Vue({
+  render: h => h(App)
+}).$mount('#app')
 ```
 
 ### Example application

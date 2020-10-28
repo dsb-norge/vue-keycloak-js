@@ -1,5 +1,3 @@
-import Keycloak from 'keycloak-js'
-
 let installed = false
 
 export default {
@@ -62,74 +60,77 @@ export default {
 }
 
 function init (config, watch, options) {
-  const ctor = sanitizeConfig(config)
-  const keycloak = Keycloak(ctor)
+  loadKeycloakLibrary(options).then((keycloakModule) => {
 
-  keycloak.onReady = function (authenticated) {
-    updateWatchVariables(authenticated)
-    watch.ready = true
-    typeof options.onReady === 'function' && options.onReady(keycloak)
-  }
-  keycloak.onAuthSuccess = function () {
-    // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
-    // Refresh token if it's valid for less then 60 seconds
-    const updateTokenInterval = setInterval(() => keycloak.updateToken(60).catch(() => {
-      keycloak.clearToken()
-    }), 10000)
-    watch.logoutFn = () => {
-      clearInterval(updateTokenInterval)
-      keycloak.logout(options.logout || { 'redirectUri': config['logoutRedirectUri'] })
+    const ctor = sanitizeConfig(config)
+    const keycloak = keycloakModule ? keycloakModule(ctor) : Keycloak(ctor)
+    keycloak.onReady = function (authenticated) {
+      updateWatchVariables(authenticated)
+      watch.ready = true
+      typeof options.onReady === 'function' && options.onReady(keycloak)
     }
-  }
-  keycloak.onAuthRefreshSuccess = function () {
-    updateWatchVariables(true)
-  }
-  keycloak.onAuthRefreshError = function () {
-    updateWatchVariables(false)
-    typeof options.onAuthRefreshError === 'function' && options.onAuthRefreshError(keycloak)
-  }
-  keycloak.init(options.init).then((authenticated) => {
-    updateWatchVariables(authenticated)
-    typeof options.onInitSuccess === 'function' && options.onInitSuccess(authenticated)
-  }).catch(() => {
-    // Keycloak does not return any error message
-    updateWatchVariables(false)
-    const error = Error('Could not initialized keycloak-js adapter')
-    typeof options.onInitError === 'function' ? options.onInitError(error) : console.error(error)
+    keycloak.onAuthSuccess = function () {
+      // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
+      // Refresh token if it's valid for less then 60 seconds
+      const updateTokenInterval = setInterval(() => keycloak.updateToken(60).catch(() => {
+        keycloak.clearToken()
+      }), 10000)
+      watch.logoutFn = () => {
+        clearInterval(updateTokenInterval)
+        keycloak.logout(options.logout || { 'redirectUri': config['logoutRedirectUri'] })
+      }
+    }
+    keycloak.onAuthRefreshSuccess = function () {
+      updateWatchVariables(true)
+    }
+    keycloak.onAuthRefreshError = function () {
+      updateWatchVariables(false)
+      typeof options.onAuthRefreshError === 'function' && options.onAuthRefreshError(keycloak)
+    }
+    keycloak.init(options.init).then((authenticated) => {
+      updateWatchVariables(authenticated)
+      typeof options.onInitSuccess === 'function' && options.onInitSuccess(authenticated)
+    }).catch(() => {
+      // Keycloak does not return any error message
+      updateWatchVariables(false)
+      const error = Error('Could not initialized keycloak-js adapter')
+      typeof options.onInitError === 'function' ? options.onInitError(error) : console.error(error)
+    })
+
+    function updateWatchVariables (isAuthenticated = false) {
+      watch.authenticated = isAuthenticated
+      watch.loginFn = keycloak.login
+      watch.login = keycloak.login
+      watch.createLoginUrl = keycloak.createLoginUrl
+      watch.createLogoutUrl = keycloak.createLogoutUrl
+      watch.createRegisterUrl = keycloak.createRegisterUrl
+      watch.register = keycloak.register
+      watch.keycloak = keycloak
+      if (isAuthenticated) {
+        watch.accountManagement = keycloak.accountManagement
+        watch.createAccountUrl = keycloak.createAccountUrl
+        watch.hasRealmRole = keycloak.hasRealmRole
+        watch.hasResourceRole = keycloak.hasResourceRole
+        watch.loadUserProfile = keycloak.loadUserProfile
+        watch.loadUserInfo = keycloak.loadUserInfo
+        watch.token = keycloak.token
+        watch.subject = keycloak.subject
+        watch.idToken = keycloak.idToken
+        watch.idTokenParsed = keycloak.idTokenParsed
+        watch.realmAccess = keycloak.realmAccess
+        watch.resourceAccess = keycloak.resourceAccess
+        watch.refreshToken = keycloak.refreshToken
+        watch.refreshTokenParsed = keycloak.refreshTokenParsed
+        watch.timeSkew = keycloak.timeSkew
+        watch.responseMode = keycloak.responseMode
+        watch.responseType = keycloak.responseType
+        watch.tokenParsed = keycloak.tokenParsed
+        watch.userName = keycloak.tokenParsed['preferred_username']
+        watch.fullName = keycloak.tokenParsed['name']
+      }
+    }
+
   })
-
-  function updateWatchVariables (isAuthenticated = false) {
-    watch.authenticated = isAuthenticated
-    watch.loginFn = keycloak.login
-    watch.login = keycloak.login
-    watch.createLoginUrl = keycloak.createLoginUrl
-    watch.createLogoutUrl = keycloak.createLogoutUrl
-    watch.createRegisterUrl = keycloak.createRegisterUrl
-    watch.register = keycloak.register
-    watch.keycloak = keycloak
-    if (isAuthenticated) {
-      watch.accountManagement = keycloak.accountManagement
-      watch.createAccountUrl = keycloak.createAccountUrl
-      watch.hasRealmRole = keycloak.hasRealmRole
-      watch.hasResourceRole = keycloak.hasResourceRole
-      watch.loadUserProfile = keycloak.loadUserProfile
-      watch.loadUserInfo = keycloak.loadUserInfo
-      watch.token = keycloak.token
-      watch.subject = keycloak.subject
-      watch.idToken = keycloak.idToken
-      watch.idTokenParsed = keycloak.idTokenParsed
-      watch.realmAccess = keycloak.realmAccess
-      watch.resourceAccess = keycloak.resourceAccess
-      watch.refreshToken = keycloak.refreshToken
-      watch.refreshTokenParsed = keycloak.refreshTokenParsed
-      watch.timeSkew = keycloak.timeSkew
-      watch.responseMode = keycloak.responseMode
-      watch.responseType = keycloak.responseType
-      watch.tokenParsed = keycloak.tokenParsed
-      watch.userName = keycloak.tokenParsed['preferred_username']
-      watch.fullName = keycloak.tokenParsed['name']
-    }
-  }
 }
 
 function assertOptions (options) {
@@ -193,4 +194,31 @@ function sanitizeConfig (config) {
     }
     return previous
   }, config)
+}
+
+/**
+ * Can load keycloak-js adapter either from the included prepackaged module. Or from the keycloak server itself
+ * given a value in options.loadFromKeycloak
+ */
+function loadKeycloakLibrary (options) {
+  return new Promise(((resolve, reject) => {
+    if (typeof (options.loadFromKeycloak) === 'string') {
+      const scriptTag = document.createElement('script')
+      scriptTag.type = 'text/javascript'
+      scriptTag.src = options.loadFromKeycloak
+      scriptTag.onload = () => {
+        resolve()
+      }
+      scriptTag.onerror = () => {
+        reject(Error(`Error loading keycloak-js script from '${options.loadFromKeycloak}'`))
+      }
+      document.getElementsByTagName('head')[0].appendChild(scriptTag)
+    } else {
+      import ('keycloak-js').then((module) => {
+        resolve(module.default)
+      }).catch((e) => {
+        reject(e)
+      })
+    }
+  }))
 }
