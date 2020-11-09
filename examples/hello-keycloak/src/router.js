@@ -24,8 +24,17 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
+    // We wait for Keycloak init, then we can call all methods safely
+    while (!router.app.$keycloak.ready) {
+      await sleep(100)
+    }
+    
     if (router.app.$keycloak.authenticated) {
       next()
     } else {
