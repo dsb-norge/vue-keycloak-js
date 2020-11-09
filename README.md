@@ -344,3 +344,7 @@ Short answer: You should not.
 For some mysterious reasons, there is undocumented support for it in the Keycloak Javascript Adapter, but it makes little sense to use it. The secret must be present in the browser, and is therefore no longer a secret. See [issue 22](https://github.com/dsb-norge/vue-keycloak-js/issues/22).
 
 The client secret is [removed from Keycloak 8.0](https://www.keycloak.org/docs/latest/release_notes/index.html#credentials-support-removed-from-the-javascript-adapter).
+
+### Localhost !== 127.0.0.1
+
+Note that if you run keycloak on your own machine its important to be consistent with the settings for it's address. Cookies created from 127.0.0.1 will not be sent to "localhost" and vice versa. 
