@@ -6,6 +6,7 @@
   "main": "dist/dsb-vue-keycloak.cjs.js",
   "module": "dist/dsb-vue-keycloak.esm.js",
   "browser": "dist/dsb-vue-keycloak.umd.js",
+  "typings": "dist/index.d.ts",
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -29,7 +30,12 @@
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "rollup": "^2.26.8",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
     "typescript": "^4.2.3",
+    "vue": "^3.0.9"
+  },
+  "peerDependencies": {
     "vue": "^3.0.9"
   },
   "scripts": {

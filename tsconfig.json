@@ -7,8 +7,9 @@
     "rootDir": "./src",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "declaration": true
   },
   "exclude": ["node_modules", "**/node_modules/*"],
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
 }
