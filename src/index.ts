@@ -1,6 +1,5 @@
 import Keycloak from "keycloak-js";
-import type { App } from "vue";
-import { reactive } from "@vue/reactivity";
+import { reactive, isVue3 } from "vue-demi";
 import type {
   VueKeycloakConfig,
   VueKeycloakOptions,
@@ -13,7 +12,7 @@ import type {
 let installed = false;
 
 export default {
-  install: function (app: App, params: VueKeycloakOptions = {}) {
+  install: function (app: any, params: VueKeycloakOptions = {}) {
     if (installed) return;
     installed = true;
 
@@ -25,43 +24,90 @@ export default {
     if (assertOptions(options).hasError)
       throw new Error(`Invalid options given: ${assertOptions(options).error}`);
 
-    const watch = reactive<VueKeycloakInstance>({
-      ready: false,
-      authenticated: false,
-      userName: null,
-      fullName: null,
-      token: null,
-      tokenParsed: null,
-      logoutFn: null,
-      loginFn: null,
-      login: null,
-      createLoginUrl: null,
-      createLogoutUrl: null,
-      createRegisterUrl: null,
-      register: null,
-      accountManagement: null,
-      createAccountUrl: null,
-      loadUserProfile: null,
-      loadUserInfo: null,
-      subject: null,
-      idToken: null,
-      idTokenParsed: null,
-      realmAccess: null,
-      resourceAccess: null,
-      refreshToken: null,
-      refreshTokenParsed: null,
-      timeSkew: null,
-      responseMode: null,
-      responseType: null,
-      hasRealmRole: null,
-      hasResourceRole: null,
-      keycloak: null,
-    });
-    Object.defineProperty(app.config.globalProperties, "$keycloak", {
-      get() {
-        return watch;
-      },
-    });
+      let watch = {} as VueKeycloakInstance
+
+      if(isVue3) {
+        watch = reactive<VueKeycloakInstance>({
+          ready: false,
+          authenticated: false,
+          userName: null,
+          fullName: null,
+          token: null,
+          tokenParsed: null,
+          logoutFn: null,
+          loginFn: null,
+          login: null,
+          createLoginUrl: null,
+          createLogoutUrl: null,
+          createRegisterUrl: null,
+          register: null,
+          accountManagement: null,
+          createAccountUrl: null,
+          loadUserProfile: null,
+          loadUserInfo: null,
+          subject: null,
+          idToken: null,
+          idTokenParsed: null,
+          realmAccess: null,
+          resourceAccess: null,
+          refreshToken: null,
+          refreshTokenParsed: null,
+          timeSkew: null,
+          responseMode: null,
+          responseType: null,
+          hasRealmRole: null,
+          hasResourceRole: null,
+          keycloak: null,
+        });
+    
+        Object.defineProperty(app.config.globalProperties, "$keycloak", {
+          get() {
+            return watch;
+          },
+        });
+      } else {
+        watch = app.observable({
+          ready: false,
+          authenticated: false,
+          userName: null,
+          fullName: null,
+          token: null,
+          tokenParsed: null,
+          logoutFn: null,
+          loginFn: null,
+          login: null,
+          createLoginUrl: null,
+          createLogoutUrl: null,
+          createRegisterUrl: null,
+          register: null,
+          accountManagement: null,
+          createAccountUrl: null,
+          loadUserProfile: null,
+          loadUserInfo: null,
+          subject: null,
+          idToken: null,
+          idTokenParsed: null,
+          realmAccess: null,
+          resourceAccess: null,
+          refreshToken: null,
+          refreshTokenParsed: null,
+          timeSkew: null,
+          responseMode: null,
+          responseType: null,
+          hasRealmRole: null,
+          hasResourceRole: null,
+          keycloak: null
+        })
+        Object.defineProperty(app.prototype, '$keycloak', {
+          get () {
+            return watch
+          }
+        })
+      }
+
+
+
+
     getConfig(options.config)
       .then((config: KeycloakConfig) => {
         init(config, watch, options);

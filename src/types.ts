@@ -25,7 +25,6 @@ export {
 };
 
 export type AnyFunction = (...args: any[]) => any;
-
 export interface KConfig extends KeycloakConfig {
   authRealm?: string;
   authUrl?: string;

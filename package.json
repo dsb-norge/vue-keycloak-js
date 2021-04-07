@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/dsb-norge/vue-keycloak-js",
   "dependencies": {
-    "keycloak-js": "9.0.3"
+    "keycloak-js": "9.0.3",
+    "vue-demi": "latest"
   },
   "keywords": [
     "vue",
@@ -36,7 +37,13 @@
     "vue": "^3.0.9"
   },
   "peerDependencies": {
-    "vue": "^3.0.9"
+    "@vue/composition-api": "^1.0.0-beta.1",
+    "vue": "^2.0.0 || >=3.0.0-rc.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "scripts": {
     "build": "rollup -c",
