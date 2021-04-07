@@ -11,7 +11,18 @@ import type {
   KeycloakTokenParsed,
 } from "keycloak-js";
 
-export { KeycloakConfig, KeycloakError } from "keycloak-js";
+export {
+  KeycloakConfig,
+  KeycloakError,
+  KeycloakInitOptions,
+  KeycloakInstance,
+  KeycloakLoginOptions,
+  KeycloakProfile,
+  KeycloakPromise,
+  KeycloakResourceAccess,
+  KeycloakRoles,
+  KeycloakTokenParsed,
+};
 
 export type AnyFunction = (...args: any[]) => any;
 
@@ -28,10 +39,14 @@ export interface VueKeycloakOptions {
   config?: VueKeycloakConfig;
   init?: KeycloakInitOptions;
   logout?: any;
-  onReady?: (keycloak: KeycloakInstance) => void;
+  onReady?: (
+    keycloak: KeycloakInstance,
+    VueKeycloak?: VueKeycloakInstance
+  ) => void;
   onInitError?: (error: Error, err: KeycloakError) => void;
   onAuthRefreshError?: (keycloak: KeycloakInstance) => void;
-  onInitSuccess?(authenticated: boolean): void;
+  onInitSuccess?(authenticated: boolean, keycloak?: KeycloakInstance,
+    VueKeycloak?: VueKeycloakInstance): void;
 }
 
 export interface VueKeycloakTokenParsed extends KeycloakTokenParsed {

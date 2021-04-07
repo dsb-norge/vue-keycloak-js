@@ -2,13 +2,12 @@ import Keycloak from "keycloak-js";
 import type { App } from "vue";
 import { reactive } from "@vue/reactivity";
 import type {
-  KConfig,
   VueKeycloakConfig,
   VueKeycloakOptions,
   KeycloakConfig,
   VueKeycloakInstance,
   KeycloakError,
-  VueKeycloakTokenParsed
+  VueKeycloakTokenParsed,
 } from "./types";
 
 let installed = false;
@@ -64,7 +63,7 @@ export default {
       },
     });
     getConfig(options.config)
-      .then((config: KConfig) => {
+      .then((config: KeycloakConfig) => {
         init(config, watch, options);
       })
       .catch((err) => {
@@ -73,9 +72,12 @@ export default {
   },
 };
 
-function init(config: KConfig, watch: VueKeycloakInstance, options:VueKeycloakOptions) {
-  const ctor = sanitizeConfig(config);
-  const keycloak = Keycloak(ctor);
+function init(
+  config: KeycloakConfig,
+  watch: VueKeycloakInstance,
+  options: VueKeycloakOptions
+) {
+  const keycloak = Keycloak(config);
 
   keycloak.onReady = function (authenticated) {
     updateWatchVariables(authenticated);
@@ -94,9 +96,7 @@ function init(config: KConfig, watch: VueKeycloakInstance, options:VueKeycloakOp
     );
     watch.logoutFn = () => {
       clearInterval(updateTokenInterval);
-      keycloak.logout(
-        options.logout || { redirectUri: config["logoutRedirectUri"] }
-      );
+      keycloak.logout(options.logout);
     };
   };
   keycloak.onAuthRefreshSuccess = function () {
@@ -114,7 +114,7 @@ function init(config: KConfig, watch: VueKeycloakInstance, options:VueKeycloakOp
       typeof options.onInitSuccess === "function" &&
         options.onInitSuccess(authenticated);
     })
-    .catch((err:KeycloakError) => {
+    .catch((err: KeycloakError) => {
       updateWatchVariables(false);
       const error = Error("Could not initialized keycloak-js adapter");
       typeof options.onInitError === "function"
@@ -150,7 +150,9 @@ function init(config: KConfig, watch: VueKeycloakInstance, options:VueKeycloakOp
       watch.responseMode = keycloak.responseMode;
       watch.responseType = keycloak.responseType;
       watch.tokenParsed = keycloak.tokenParsed;
-      watch.userName = (keycloak.tokenParsed as VueKeycloakTokenParsed)["preferred_username"];
+      watch.userName = (keycloak.tokenParsed as VueKeycloakTokenParsed)[
+        "preferred_username"
+      ];
       watch.fullName = (keycloak.tokenParsed as VueKeycloakTokenParsed)["name"];
     }
   }
@@ -219,25 +221,4 @@ function getConfig(config: VueKeycloakConfig) {
     };
     xhr.send();
   });
-}
-
-function sanitizeConfig(config: KConfig): KeycloakConfig {
-  const renameProp = (
-    oldProp: string,
-    newProp: string,
-    { [oldProp]: old, ...others }
-  ) => {
-    return {
-      [newProp]: old,
-      ...others,
-    };
-  };
-  return Object.keys(config).reduce(function (previous, key) {
-    if (["authRealm", "authUrl", "authClientId"].includes(key)) {
-      const cleaned = key.replace("auth", "");
-      const newKey = cleaned.charAt(0).toLowerCase() + cleaned.slice(1);
-      return renameProp(key, newKey, previous) as KeycloakConfig;
-    }
-    return previous;
-  }, config);
 }
