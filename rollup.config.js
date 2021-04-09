@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel'
 import typescript from 'rollup-plugin-typescript2'
 import pkg from './package.json'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const version = process.env.VERSION || require('./package.json').version
 const banner = `/*!
   * vue-keycloak-js v${version}
