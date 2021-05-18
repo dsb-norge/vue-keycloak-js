@@ -1,5 +1,5 @@
 import Keycloak from 'keycloak-js'
-import { reactive, readonly, ref } from '@vue/reactivity'
+import { reactive } from '@vue/reactivity'
 import type {
   VueKeycloakConfig,
   VueKeycloakOptions,
@@ -24,84 +24,37 @@ export default {
     if (assertOptions(options).hasError)
       throw new Error(`Invalid options given: ${assertOptions(options).error}`)
 
-    let watch: VueKeycloakInstance
-    if (app.prototype) {
-      // Vue 2
-      watch = app.observable({
-        ready: ref(false),
-        authenticated: false,
-        userName: null,
-        fullName: null,
-        token: null,
-        tokenParsed: null,
-        logoutFn: null,
-        loginFn: null,
-        login: null,
-        createLoginUrl: null,
-        createLogoutUrl: null,
-        createRegisterUrl: null,
-        register: null,
-        accountManagement: null,
-        createAccountUrl: null,
-        loadUserProfile: null,
-        subject: null,
-        idToken: null,
-        idTokenParsed: null,
-        realmAccess: null,
-        resourceAccess: null,
-        refreshToken: null,
-        refreshTokenParsed: null,
-        timeSkew: null,
-        responseMode: null,
-        responseType: null,
-        hasRealmRole: null,
-        hasResourceRole: null,
-        keycloak: null,
-      })
-      Object.defineProperty(app.prototype, '$keycloak', {
-        get () {
-          return watch
-        }
-      })
-    } else {
-      // Vue 3
-      watch = reactive<VueKeycloakInstance>({
-        ready: false,
-        authenticated: false,
-        userName: null,
-        fullName: null,
-        token: null,
-        tokenParsed: null,
-        logoutFn: null,
-        loginFn: null,
-        login: null,
-        createLoginUrl: null,
-        createLogoutUrl: null,
-        createRegisterUrl: null,
-        register: null,
-        accountManagement: null,
-        createAccountUrl: null,
-        loadUserProfile: null,
-        subject: null,
-        idToken: null,
-        idTokenParsed: null,
-        realmAccess: null,
-        resourceAccess: null,
-        refreshToken: null,
-        refreshTokenParsed: null,
-        timeSkew: null,
-        responseMode: null,
-        responseType: null,
-        hasRealmRole: null,
-        hasResourceRole: null,
-        keycloak: null,
-      })
-      Object.defineProperty(app.config.globalProperties, '$keycloak', {
-        get() {
-          return readonly(watch)
-        },
-      })
-    }
+    const watch = vue2AndVue3Reactive(app, {
+      ready: false,
+      authenticated: false,
+      userName: null,
+      fullName: null,
+      token: null,
+      tokenParsed: null,
+      logoutFn: null,
+      loginFn: null,
+      login: null,
+      createLoginUrl: null,
+      createLogoutUrl: null,
+      createRegisterUrl: null,
+      register: null,
+      accountManagement: null,
+      createAccountUrl: null,
+      loadUserProfile: null,
+      subject: null,
+      idToken: null,
+      idTokenParsed: null,
+      realmAccess: null,
+      resourceAccess: null,
+      refreshToken: null,
+      refreshTokenParsed: null,
+      timeSkew: null,
+      responseMode: null,
+      responseType: null,
+      hasRealmRole: null,
+      hasResourceRole: null,
+      keycloak: null,
+    })
     getConfig(options.config)
       .then((config: VueKeycloakConfig) => {
         init(config, watch, options)
@@ -112,13 +65,31 @@ export default {
   },
 }
 
+function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance) {
+  if (app.prototype) {
+    // Vue 2
+    const reactiveObj = app.observable(object)
+    Object.defineProperty(app.prototype, '$keycloak', {
+      get () {
+        return reactiveObj
+      }
+    })
+    return reactiveObj
+  } else {
+    // Vue 3
+    const reactiveObj = reactive(object)
+    app.config.globalProperties.$keycloak = reactiveObj
+    return reactiveObj
+  }
+}
+
 function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:VueKeycloakOptions) {
   const keycloak = Keycloak(config)
 
   keycloak.onReady = function (authenticated) {
     updateWatchVariables(authenticated)
     watch.ready = true
-    typeof options.onReady === 'function' && options.onReady(keycloak)
+    typeof options.onReady === 'function' && options.onReady(keycloak, watch)
   }
   keycloak.onAuthSuccess = function () {
     // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
