@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ $keycloak }}
     <div v-if="$keycloak && $keycloak.ready">
       <div v-if="$keycloak.authenticated">
         <h2>You should only be able to see this if you are authenticated.</h2>
