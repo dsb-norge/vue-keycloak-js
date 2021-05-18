@@ -31,10 +31,9 @@ function sleep(ms) {
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // We wait for Keycloak init, then we can call all methods safely
-    while (!router.app.$keycloak.ready) {
+    while (router.app.$keycloak.createLoginUrl === null) {
       await sleep(100)
     }
-    
     if (router.app.$keycloak.authenticated) {
       next()
     } else {

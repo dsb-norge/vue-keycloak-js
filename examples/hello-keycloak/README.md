@@ -1,19 +1,5 @@
-# hello-keycloak
+# Vue 2 + Vue Router - check-sso
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+In this example the application has a secret route `/secret` which is only accessible
+if you are authenticated. The regular `/` home view can be accessed without being
+authenticated

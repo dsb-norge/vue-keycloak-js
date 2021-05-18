@@ -42,6 +42,8 @@ npm install @dsb-norge/vue-keycloak-js --save
 
 ## Usage
 
+### Vue 2
+
 > `Vue.use(VueKeyCloak, [options])`
 
 Tell Vue to install the plugin, and optionally pass in a JavaScript object additional
@@ -56,10 +58,50 @@ Vue.use(VueKeyCloak)
 Vue.use(VueKeyCloak, options)
 ```
 
+### Vue 3
+
+> `createApp(App).use(VueKeycloak, [options])`
+
+Tell Vue to install the plugin, and optionally pass in a JavaScript object additional
+configuration.
+
+```javascript
+import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
+
+createApp(App).use(VueKeycloak)
+
+// You can also pass in options. Check options reference below.
+createApp(App).use(VueKeycloak, options)
+```
+
+```typescript
+import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
+import { VueKeycloakInstance } from "@dsb-norge/vue-keycloak-js/dist/types";
+
+createApp(App).use(VueKeycloak)
+
+// You can also pass in options. Check options reference below.
+createApp(App).use(VueKeycloak, options)
+
+// Allow usage of this.$keycloak in components
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties  {
+    $keycloak: VueKeycloakInstance
+  }
+}
+```
+
 The plugin adds a `$keycloak` property to the global Vue instance.
-This is actually a [Vue.observable](https://vuejs.org/v2/api/#Vue-observable) instance and can be used as such.
-It shadows most of the keycloak instance's properties and functions. All other variables & functions can be found
-on `$keycloak.keycloak` attribute
+This shadows most of the keycloak instance's properties and functions.
+All other variables & functions can be found on `$keycloak.keycloak` attribute
+
+Internally for Vue 2:
+ * [Vue.observable](https://vuejs.org/v2/api/#Vue-observable)
+
+Internally for Vue 3
+* [reactive](https://v3.vuejs.org/guide/reactivity-fundamentals.html#declaring-reactive-state)
+
+This object is reactive and will update with new tokens and other information
 
 These properties/functions are exposed:
 
@@ -79,7 +121,6 @@ These properties/functions are exposed:
   accountManagement: Function, // Keycloak accountManagement function
   createAccountUrl: Function,  // Keycloak createAccountUrl function
   loadUserProfile: Function,   // Keycloak loadUserProfile function
-  loadUserInfo: Function,      // Keycloak loadUserInfo function
   subject: String,             // The user id
   idToken: String,             // The base64 encoded ID token.
   idTokenParsed: Object,       // The parsed id token as a JavaScript object.
@@ -112,25 +153,8 @@ You can pass in an object as options to the plugin. The following keys are valid
 
 ### config
 
-**IMPORTANT NOTE**
-
-Currently, the plugin accepts a config object like this:
-
-```
-{
-  authRealm: String,
-  authUrl: String,
-  authClientId: String,
-  logoutRedirectUri: String
-}
-```
-
-**This will be deprecated in the next major release.**
-
-Thereafter, the config object, either returned from an endpoint (string) or
+The config object, either returned from an endpoint (string) or
 set directly (object), must be compatible with the [Keycloak JS adapter](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter) constructor arguments.
-
-The `logoutRedirectUri` must instead be defined in [`options.logout`](#logout)
 
 See description below.
 
@@ -316,11 +340,20 @@ Vue.use(VueKeyCloak, {
 })
 ```
 
-### Example application
+### Example applications
 
 View a complete example app, with router guards:
 
-[hello-keycloak](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples)
+[hello-keycloak](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/hello-keycloak)
+
+Simple 'in component' secret displaying reactiveness
+
+[simple_vue2](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/simple_vue2)
+
+Typescript example with vue 3
+
+[typescript_vue3](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/typescript_vue3)
+
 
 ## Develop and deploy
 
@@ -347,4 +380,4 @@ The client secret is [removed from Keycloak 8.0](https://www.keycloak.org/docs/l
 
 ### Localhost !== 127.0.0.1
 
-Note that if you run keycloak on your own machine its important to be consistent with the settings for it's address. Cookies created from 127.0.0.1 will not be sent to "localhost" and vice versa. 
+Note that if you run keycloak on your own machine its important to be consistent with the settings for it's address. Cookies created from 127.0.0.1 will not be sent to "localhost" and vice versa.
