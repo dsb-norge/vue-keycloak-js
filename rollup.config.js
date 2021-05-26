@@ -20,26 +20,29 @@ const globals = {
 export default {
   input: 'src/index.ts',
   output: [
-    { exports: 'default',
+    {
+      exports: 'default',
       file: pkg.main,
       format: 'cjs',
       banner,
       name,
-      globals: globals
+      globals
     },
-    { exports: 'default',
+    {
+      exports: 'default',
       file: pkg.module,
       format: 'es',
       banner,
       name,
-      globals: globals,
+      globals
     },
-    { exports: 'default',
+    {
+      exports: 'default',
       file: pkg.browser,
       format: 'umd',
       banner,
       name,
-      globals: globals,
+      globals
     },
   ],
   plugins: [
