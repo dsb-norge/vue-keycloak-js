@@ -12,8 +12,8 @@ const banner = `/*!
   */`
 const name = 'dsb-vue-keycloak'
 const globals = {
-  '@vue/reactivity': 'reactivity',
-  'keycloak-js': 'keycloak',
+  '@vue/reactivity': 'Reactivity',
+  'keycloak-js': 'Keycloak',
 }
 
 // CommonJS (for Node), ES module (for bundlers) and browser-friendly UMD build.
