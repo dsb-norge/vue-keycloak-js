@@ -11,14 +11,36 @@ const banner = `/*!
   * @license ISC
   */`
 const name = 'dsb-vue-keycloak'
+const globals = {
+  '@vue/reactivity': 'reactivity',
+  'keycloak-js': 'keycloak',
+}
 
 // CommonJS (for Node), ES module (for bundlers) and browser-friendly UMD build.
 export default {
   input: 'src/index.ts',
   output: [
-    { file: pkg.main, format: 'cjs', banner, name },
-    { file: pkg.module, format: 'es', banner, name },
-    { file: pkg.browser, format: 'umd', banner, name },
+    { exports: 'default',
+      file: pkg.main,
+      format: 'cjs',
+      banner,
+      name,
+      globals: globals
+    },
+    { exports: 'default',
+      file: pkg.module,
+      format: 'es',
+      banner,
+      name,
+      globals: globals,
+    },
+    { exports: 'default',
+      file: pkg.browser,
+      format: 'umd',
+      banner,
+      name,
+      globals: globals,
+    },
   ],
   plugins: [
     resolve(), // so Rollup can find `keycloak-js`
