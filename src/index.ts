@@ -1,5 +1,4 @@
 import Keycloak from 'keycloak-js'
-import { reactive } from '@vue/reactivity'
 import type {
   VueKeycloakConfig,
   VueKeycloakOptions,
@@ -24,7 +23,7 @@ export default {
     if (assertOptions(options).hasError)
       throw new Error(`Invalid options given: ${assertOptions(options).error}`)
 
-    const watch = vue2AndVue3Reactive(app, {
+    vue2AndVue3Reactive(app, {
       ready: false,
       authenticated: false,
       userName: null,
@@ -54,18 +53,19 @@ export default {
       hasRealmRole: null,
       hasResourceRole: null,
       keycloak: null,
+    }).then((watch) => {
+      getConfig(options.config)
+        .then((config: VueKeycloakConfig) => {
+          init(config, watch, options)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     })
-    getConfig(options.config)
-      .then((config: VueKeycloakConfig) => {
-        init(config, watch, options)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
   },
 }
 
-function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance) {
+async function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance) {
   if (app.prototype) {
     // Vue 2
     const reactiveObj = app.observable(object)
@@ -77,8 +77,14 @@ function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance) {
     return reactiveObj
   } else {
     // Vue 3
-    const reactiveObj = reactive(object)
+
+    // Assign an object immediately to allow usage of $keycloak in view
+    const reactiveObj = {}
     app.config.globalProperties.$keycloak = reactiveObj
+    // Async load module to allow vue 2 to not have the dependency.
+    const reactivity = await import ('@vue/reactivity')
+    // Override the existing reactiveObj so references contains the new reactive values
+    Object.assign(reactiveObj, reactivity.reactive(object))
     return reactiveObj
   }
 }
