@@ -15,6 +15,7 @@ const globals = {
   '@vue/reactivity': 'Reactivity',
   'keycloak-js': 'Keycloak',
 }
+const inlineDynamicImports = true
 
 // CommonJS (for Node), ES module (for bundlers) and browser-friendly UMD build.
 export default {
@@ -26,7 +27,8 @@ export default {
       format: 'cjs',
       banner,
       name,
-      globals
+      globals,
+      inlineDynamicImports
     },
     {
       exports: 'default',
@@ -34,7 +36,8 @@ export default {
       format: 'es',
       banner,
       name,
-      globals
+      globals,
+      inlineDynamicImports
     },
     {
       exports: 'default',
@@ -42,7 +45,8 @@ export default {
       format: 'umd',
       banner,
       name,
-      globals
+      globals,
+      inlineDynamicImports
     },
   ],
   plugins: [
@@ -59,5 +63,5 @@ export default {
       babelHelpers: 'bundled',
     }),
   ],
-  external: ['vue', '@vue/reactivity', 'keycloak-js'],
+  external: ['vue', 'keycloak-js'],
 }

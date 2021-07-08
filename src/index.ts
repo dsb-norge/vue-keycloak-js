@@ -23,37 +23,10 @@ export default {
     if (assertOptions(options).hasError)
       throw new Error(`Invalid options given: ${assertOptions(options).error}`)
 
-    vue2AndVue3Reactive(app, {
-      ready: false,
-      authenticated: false,
-      userName: null,
-      fullName: null,
-      token: null,
-      tokenParsed: null,
-      logoutFn: null,
-      loginFn: null,
-      login: null,
-      createLoginUrl: null,
-      createLogoutUrl: null,
-      createRegisterUrl: null,
-      register: null,
-      accountManagement: null,
-      createAccountUrl: null,
-      loadUserProfile: null,
-      subject: null,
-      idToken: null,
-      idTokenParsed: null,
-      realmAccess: null,
-      resourceAccess: null,
-      refreshToken: null,
-      refreshTokenParsed: null,
-      timeSkew: null,
-      responseMode: null,
-      responseType: null,
-      hasRealmRole: null,
-      hasResourceRole: null,
-      keycloak: null,
-    }).then((watch) => {
+    vue2AndVue3Reactive(
+      app,
+      defaultEmptyVueKeycloakInstance()
+    ).then((watch) => {
       getConfig(options.config)
         .then((config: VueKeycloakConfig) => {
           init(config, watch, options)
@@ -65,28 +38,71 @@ export default {
   },
 }
 
-async function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance) {
-  if (app.prototype) {
-    // Vue 2
-    const reactiveObj = app.observable(object)
-    Object.defineProperty(app.prototype, '$keycloak', {
-      get () {
-        return reactiveObj
-      }
-    })
-    return reactiveObj
-  } else {
-    // Vue 3
-
-    // Assign an object immediately to allow usage of $keycloak in view
-    const reactiveObj = {}
-    app.config.globalProperties.$keycloak = reactiveObj
-    // Async load module to allow vue 2 to not have the dependency.
-    const reactivity = await import ('@vue/reactivity')
-    // Override the existing reactiveObj so references contains the new reactive values
-    Object.assign(reactiveObj, reactivity.reactive(object))
-    return reactiveObj
+function defaultEmptyVueKeycloakInstance(): VueKeycloakInstance {
+  return {
+    ready: false,
+    authenticated: false,
+    userName: null,
+    fullName: null,
+    token: null,
+    tokenParsed: null,
+    logoutFn: null,
+    loginFn: null,
+    login: null,
+    createLoginUrl: null,
+    createLogoutUrl: null,
+    createRegisterUrl: null,
+    register: null,
+    accountManagement: null,
+    createAccountUrl: null,
+    loadUserProfile: null,
+    subject: null,
+    idToken: null,
+    idTokenParsed: null,
+    realmAccess: null,
+    resourceAccess: null,
+    refreshToken: null,
+    refreshTokenParsed: null,
+    timeSkew: null,
+    responseMode: null,
+    responseType: null,
+    hasRealmRole: null,
+    hasResourceRole: null,
+    keycloak: null,
   }
+}
+
+function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Promise<VueKeycloakInstance> {
+  return new Promise((resolve, reject) => {
+    if (app.prototype) {
+      // Vue 2
+      try {
+        const reactiveObj = app.observable(object)
+        Object.defineProperty(app.prototype, '$keycloak', {
+          get() {
+            return reactiveObj
+          }
+        })
+        resolve(reactiveObj)
+      } catch (e) {
+        reject(e)
+      }
+    } else {
+      // Vue 3
+
+      // Assign an object immediately to allow usage of $keycloak in view
+      const reactiveObj = defaultEmptyVueKeycloakInstance()
+      app.config.globalProperties.$keycloak = reactiveObj
+      // Async load module to allow vue 2 to not have the dependency.
+      import ('@vue/reactivity').then((reactivity) => {
+        // Override the existing reactiveObj so references contains the new reactive values
+        Object.assign(reactiveObj, reactivity.reactive(object))
+        resolve(reactiveObj)
+      }).catch(e => {
+        reject(e)
+      })
+    }
+  })
 }
 
 function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:VueKeycloakOptions) {
