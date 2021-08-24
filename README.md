@@ -228,7 +228,9 @@ In conjunction with the above, you might find it useful to intercept e.g. axios 
 ```javascript
 function tokenInterceptor () {
   axios.interceptors.request.use(config => {
-    config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
+    if (Vue.prototype.$keycloak.authenticated) {
+      config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
+    }
     return config
   }, error => {
     return Promise.reject(error)
