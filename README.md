@@ -26,6 +26,12 @@ will be redirected back to the application and remain unauthenticated.
 
 > `keycloak.init({ onLoad: 'login-required' })`
 
+## Note on Vue 3
+
+Vue 3 support is in _beta_, starting from 2.0.0-beta. Any help is greatly appreciated!
+
+When Vue 3 is fully supported, we will release version 2.0.0.
+
 ## Installation
 
 ### Install using yarn
@@ -58,7 +64,7 @@ Vue.use(VueKeyCloak)
 Vue.use(VueKeyCloak, options)
 ```
 
-### Vue 3
+### Vue 3 (beta)
 
 > `createApp(App).use(VueKeycloak, [options])`
 
