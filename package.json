@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/dsb-norge/vue-keycloak-js",
   "dependencies": {
-    "keycloak-js": "9.0.3"
+    "keycloak-js": "^15.0.2"
   },
   "keywords": [
     "vue",
