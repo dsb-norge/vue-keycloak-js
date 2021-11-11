@@ -11,9 +11,11 @@ let installed = false
 
 const KeycloakSymbol = Symbol('keycloak')
 
+import * as vue from 'vue'
+
 export default {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  install: function (app: Vue2Vue3App, params: VueKeycloakOptions = {}) {
+  install: async function (app: Vue2Vue3App, params: VueKeycloakOptions = {}) {
     if (installed) return
     installed = true
 
@@ -25,18 +27,17 @@ export default {
     if (assertOptions(options).hasError)
       throw new Error(`Invalid options given: ${assertOptions(options).error}`)
 
-    vue2AndVue3Reactive(
+    const watch = await vue2AndVue3Reactive(
       app,
       defaultEmptyVueKeycloakInstance()
-    ).then((watch) => {
-      getConfig(options.config)
-        .then((config: VueKeycloakConfig) => {
-          init(config, watch, options)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    })
+    )
+    getConfig(options.config)
+      .then((config: VueKeycloakConfig) => {
+        init(config, watch, options)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   },
   KeycloakSymbol
 }
@@ -76,7 +77,7 @@ function defaultEmptyVueKeycloakInstance(): VueKeycloakInstance {
 }
 
 function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Promise<VueKeycloakInstance> {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (app.prototype) {
       // Vue 2
       try {
@@ -93,18 +94,15 @@ function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Pro
     } else {
       // Vue 3
       // Assign an object immediately to allow usage of $keycloak in view
-      app.config.globalProperties.$keycloak = defaultEmptyVueKeycloakInstance()
+
+      //const vue = await import('vue')
       // Async load module to allow vue 2 to not have the dependency.
-      import ('vue').then((vue) => {
         const reactiveObj = vue.reactive(object)
         // Override the existing reactiveObj so references contains the new reactive values
-        app.config.globalProperties.$keycloak = defaultEmptyVueKeycloakInstance()
+        app.config.globalProperties.$keycloak =  reactiveObj 
         // Use provide/inject in Vue3 apps
         app.provide(KeycloakSymbol, reactiveObj)
         resolve(reactiveObj)
-      }).catch(e => {
-        reject(e)
-      })
     }
   })
 }
