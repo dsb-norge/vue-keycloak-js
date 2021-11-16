@@ -7,7 +7,7 @@
     "serve": "vite preview --port 8080"
   },
   "dependencies": {
-    "@dsb-norge/vue-keycloak-js": "2.0.1-beta",
+    "@dsb-norge/vue-keycloak-js": "2.1.1-beta",
     "vue": "^3.2.16"
   },
   "devDependencies": {

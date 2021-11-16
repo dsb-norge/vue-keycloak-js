@@ -7,7 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@dsb-norge/vue-keycloak-js": "2.0.1-beta",
+    "@dsb-norge/vue-keycloak-js": "2.1.1-beta",
     "core-js": "^3.6.5",
     "vue": "^2.6.14",
     "vue-router": "^3.5.2"
