@@ -10,7 +10,6 @@ import type {
   KeycloakRoles,
   KeycloakTokenParsed,
 } from 'keycloak-js'
-import type { App } from 'vue'
 
 export {
   KeycloakConfig,
@@ -25,10 +24,14 @@ export {
   KeycloakTokenParsed,
 }
 
-export interface Vue2Vue3App extends App {
+export interface Vue2Vue3App {
   prototype?: unknown,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  observable?: any
+  observable?: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config?: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  provide?: any
 }
 
 export type VueKeycloakConfig = KeycloakConfig | string;

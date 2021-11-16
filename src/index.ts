@@ -77,7 +77,7 @@ function defaultEmptyVueKeycloakInstance(): VueKeycloakInstance {
 }
 
 function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Promise<VueKeycloakInstance> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (app.prototype) {
       // Vue 2
       try {
@@ -97,12 +97,12 @@ function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Pro
 
       //const vue = await import('vue')
       // Async load module to allow vue 2 to not have the dependency.
-        const reactiveObj = vue.reactive(object)
-        // Override the existing reactiveObj so references contains the new reactive values
-        app.config.globalProperties.$keycloak =  reactiveObj 
-        // Use provide/inject in Vue3 apps
-        app.provide(KeycloakSymbol, reactiveObj)
-        resolve(reactiveObj)
+      const reactiveObj = vue.reactive(object)
+      // Override the existing reactiveObj so references contains the new reactive values
+      app.config.globalProperties.$keycloak =  reactiveObj
+      // Use provide/inject in Vue3 apps
+      app.provide(KeycloakSymbol, reactiveObj)
+      resolve(reactiveObj)
     }
   })
 }

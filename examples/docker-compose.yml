@@ -3,9 +3,9 @@ version: '3.7'
 services:
 
   keycloak:
-    # Redhat-sso 7.4 uses keycloak 9.0.5. However that version does not have a docker tag. so using 9.0.3
-    # https://access.redhat.com/articles/2342881#rhsso74
-    image: jboss/keycloak:9.0.3
+    # Redhat-sso 7.5 uses keycloak 15.0.2
+    # https://access.redhat.com/articles/2342881#rhsso75
+    image: jboss/keycloak:15.0.2
     ports:
       - "8085:8080"
     environment:
