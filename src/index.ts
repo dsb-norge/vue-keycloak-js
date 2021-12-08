@@ -132,6 +132,8 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
   }
   keycloak.onAuthRefreshSuccess = function () {
     updateWatchVariables(true)
+    typeof options.onAuthRefreshSuccess === 'function' &&
+    options.onAuthRefreshSuccess(keycloak)
   }
   keycloak.onAuthRefreshError = function () {
     updateWatchVariables(false)
