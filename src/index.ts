@@ -149,7 +149,7 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
     })
     .catch((err:KeycloakError) => {
       updateWatchVariables(false)
-      const error = Error('Could not initialized keycloak-js adapter')
+      const error = Error('Failure during initialization of keycloak-js adapter')
       typeof options.onInitError === 'function'
         ? options.onInitError(error, err)
         : console.error(error, err)
