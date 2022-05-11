@@ -21,9 +21,9 @@ adapter automatically authenticate. You can pass login-required or check-sso to 
 login-required will authenticate the client if the user is logged-in to Keycloak or display the login page if not.
 check-sso will only authenticate the client if the user is already logged-in, if the user is not logged-in the browser
 will be redirected back to the application and remain unauthenticated.
-
+>
 > To enable login-required set onLoad to login-required and pass to the init method:
-
+>
 > `keycloak.init({ onLoad: 'login-required' })`
 
 ## Note on Vue 3
@@ -52,8 +52,7 @@ npm install @dsb-norge/vue-keycloak-js --save
 
 > `Vue.use(VueKeyCloak, [options])`
 
-Tell Vue to install the plugin, and optionally pass in a JavaScript object additional
-configuration.
+Tell Vue to install the plugin, and optionally pass in a JavaScript object for additional configuration.
 
 ```javascript
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
@@ -68,8 +67,7 @@ Vue.use(VueKeyCloak, options)
 
 > `createApp(App).use(VueKeycloak, [options])`
 
-Tell Vue to install the plugin, and optionally pass in a JavaScript object additional
-configuration.
+Tell Vue to install the plugin, and optionally pass in a JavaScript object for additional configuration.
 
 ```javascript
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
@@ -147,15 +145,15 @@ These properties/functions are exposed:
 
 ## Options
 
-You can pass in an object as options to the plugin. The following keys are valid options. See below for descpription.
+You can pass in an object as options to the plugin. The following keys are valid options. See below for description.
 
-|Key|Type|Default
-|---|---|---|
-| `config`|String &#124; Object|`window.__BASEURL__ + '/config'`
-|`init`|Object|`{onLoad: 'login-required'}`
-|`logout`|Object|
-|`onReady`|Function(keycloak)|
-|`onInitError`|Function(error)|
+| Key           | Type                 | Default                          |
+|---------------|----------------------|----------------------------------|
+| `config`      | String &#124; Object | `window.__BASEURL__ + '/config'` |
+| `init`        | Object               | `{onLoad: 'login-required'}`     |
+| `logout`      | Object               |                                  |
+| `onReady`     | Function(keycloak)   |                                  |
+| `onInitError` | Function(error)      |                                  |
 
 ### config
 
@@ -354,7 +352,7 @@ View a complete example app, with router guards:
 
 [hello-keycloak](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/hello-keycloak)
 
-Simple 'in component' secret displaying reactiveness
+Simple 'in component' secret displaying reactiveness:
 
 [simple_vue2](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/simple_vue2)
 
@@ -372,7 +370,7 @@ $ npm version patch
 ```
 
 The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to
-the NPM registry
+the NPM registry.
 
 ## Frequently asked questions
 
@@ -388,4 +386,4 @@ The client secret is [removed from Keycloak 8.0](https://www.keycloak.org/docs/l
 
 ### Localhost !== 127.0.0.1
 
-Note that if you run keycloak on your own machine its important to be consistent with the settings for it's address. Cookies created from 127.0.0.1 will not be sent to "localhost" and vice versa.
+Note that if you run keycloak on your own machine it is important to be consistent with the settings for its address. Cookies created from 127.0.0.1 will not be sent to "localhost" and vice versa.
