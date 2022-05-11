@@ -21,9 +21,9 @@ adapter automatically authenticate. You can pass login-required or check-sso to 
 login-required will authenticate the client if the user is logged-in to Keycloak or display the login page if not.
 check-sso will only authenticate the client if the user is already logged-in, if the user is not logged-in the browser
 will be redirected back to the application and remain unauthenticated.
-
+>
 > To enable login-required set onLoad to login-required and pass to the init method:
-
+>
 > `keycloak.init({ onLoad: 'login-required' })`
 
 ## Note on Vue 3
@@ -147,15 +147,15 @@ These properties/functions are exposed:
 
 ## Options
 
-You can pass in an object as options to the plugin. The following keys are valid options. See below for descpription.
+You can pass in an object as options to the plugin. The following keys are valid options. See below for description.
 
-|Key|Type|Default
-|---|---|---|
-| `config`|String &#124; Object|`window.__BASEURL__ + '/config'`
-|`init`|Object|`{onLoad: 'login-required'}`
-|`logout`|Object|
-|`onReady`|Function(keycloak)|
-|`onInitError`|Function(error)|
+| Key           | Type                 | Default                          |
+|---------------|----------------------|----------------------------------|
+| `config`      | String &#124; Object | `window.__BASEURL__ + '/config'` |
+| `init`        | Object               | `{onLoad: 'login-required'}`     |
+| `logout`      | Object               |                                  |
+| `onReady`     | Function(keycloak)   |                                  |
+| `onInitError` | Function(error)      |                                  |
 
 ### config
 
