@@ -52,8 +52,7 @@ npm install @dsb-norge/vue-keycloak-js --save
 
 > `Vue.use(VueKeyCloak, [options])`
 
-Tell Vue to install the plugin, and optionally pass in a JavaScript object additional
-configuration.
+Tell Vue to install the plugin, and optionally pass in a JavaScript object for additional configuration.
 
 ```javascript
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
@@ -68,8 +67,7 @@ Vue.use(VueKeyCloak, options)
 
 > `createApp(App).use(VueKeycloak, [options])`
 
-Tell Vue to install the plugin, and optionally pass in a JavaScript object additional
-configuration.
+Tell Vue to install the plugin, and optionally pass in a JavaScript object for additional configuration.
 
 ```javascript
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
@@ -354,7 +352,7 @@ View a complete example app, with router guards:
 
 [hello-keycloak](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/hello-keycloak)
 
-Simple 'in component' secret displaying reactiveness
+Simple 'in component' secret displaying reactiveness:
 
 [simple_vue2](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/simple_vue2)
 
@@ -372,7 +370,7 @@ $ npm version patch
 ```
 
 The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to
-the NPM registry
+the NPM registry.
 
 ## Frequently asked questions
 
@@ -388,4 +386,4 @@ The client secret is [removed from Keycloak 8.0](https://www.keycloak.org/docs/l
 
 ### Localhost !== 127.0.0.1
 
-Note that if you run keycloak on your own machine its important to be consistent with the settings for it's address. Cookies created from 127.0.0.1 will not be sent to "localhost" and vice versa.
+Note that if you run keycloak on your own machine it is important to be consistent with the settings for its address. Cookies created from 127.0.0.1 will not be sent to "localhost" and vice versa.
