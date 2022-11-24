@@ -42,6 +42,7 @@ export interface VueKeycloakOptions {
   // This is not defined in keycloak
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   logout?: any;
+  updateInterval?: number;
   onReady?: (
     keycloak: KeycloakInstance,
     VueKeycloak?: VueKeycloakInstance
