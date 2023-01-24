@@ -109,6 +109,7 @@ function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Pro
 
 function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:VueKeycloakOptions) {
   const keycloak = Keycloak(config)
+  const { updateInterval } = options
 
   keycloak.onReady = function (authenticated) {
     updateWatchVariables(authenticated)
@@ -123,7 +124,7 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
         keycloak.updateToken(60).catch(() => {
           keycloak.clearToken()
         }),
-      10000
+      updateInterval ?? 10000
     )
     watch.logoutFn = () => {
       clearInterval(updateTokenInterval)
