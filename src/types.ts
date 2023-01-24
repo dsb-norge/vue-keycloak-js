@@ -2,7 +2,6 @@ import type {
   KeycloakConfig,
   KeycloakError,
   KeycloakInitOptions,
-  KeycloakInstance,
   KeycloakLoginOptions,
   KeycloakProfile,
   KeycloakPromise,
@@ -11,11 +10,13 @@ import type {
   KeycloakTokenParsed,
 } from 'keycloak-js'
 
+import Keycloak from 'keycloak-js'
+
 export {
   KeycloakConfig,
   KeycloakError,
   KeycloakInitOptions,
-  KeycloakInstance,
+  Keycloak,
   KeycloakLoginOptions,
   KeycloakProfile,
   KeycloakPromise,
@@ -43,13 +44,13 @@ export interface VueKeycloakOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   logout?: any;
   onReady?: (
-    keycloak: KeycloakInstance,
+    keycloak: Keycloak,
     VueKeycloak?: VueKeycloakInstance
   ) => void;
   onInitError?: (error: Error, err: KeycloakError) => void;
-  onAuthRefreshError?: (keycloak: KeycloakInstance) => void;
-  onAuthRefreshSuccess?: (keycloak: KeycloakInstance) => void;
-  onInitSuccess?(authenticated: boolean, keycloak?: KeycloakInstance,
+  onAuthRefreshError?: (keycloak: Keycloak) => void;
+  onAuthRefreshSuccess?: (keycloak: Keycloak) => void;
+  onInitSuccess?(authenticated: boolean, keycloak?: Keycloak,
     VueKeycloak?: VueKeycloakInstance): void;
 }
 
@@ -91,5 +92,5 @@ export interface VueKeycloakInstance {
   hasResourceRole?(role: string, resource?: string): boolean; // Keycloak hasResourceRole function
   token?: string; // The base64 encoded token that can be sent in the Authorization header in requests to services
   tokenParsed?: VueKeycloakTokenParsed; // The parsed token as a JavaScript object
-  keycloak?: KeycloakInstance; // The original keycloak instance 'as is' from keycloak-js adapter
+  keycloak?: Keycloak; // The original keycloak instance 'as is' from keycloak-js adapter
 }

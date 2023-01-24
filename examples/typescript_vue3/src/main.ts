@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import VueKeycloakJs from '@dsb-norge/vue-keycloak-js'
 import App from './App.vue'
-import {KeycloakInstance} from "keycloak-js";
+import Keycloak from "keycloak-js";
 import {VueKeycloakInstance} from "@dsb-norge/vue-keycloak-js/dist/types";
 
 createApp(App)
@@ -17,7 +17,7 @@ createApp(App)
       clientId: 'vue-client',
       realm: 'vue'
     },
-    onReady (keycloak: KeycloakInstance) {
+    onReady (keycloak: Keycloak) {
       console.log('Keycloak ready', keycloak)
     }
   })
