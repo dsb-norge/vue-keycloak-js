@@ -7,14 +7,14 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@dsb-norge/vue-keycloak-js": "2.1.1-beta",
+    "@dsb-norge/vue-keycloak-js": "2.2.0",
     "core-js": "^3.6.5",
     "vue": "^3.1.4"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.13",
-    "@vue/cli-plugin-typescript": "~4.5.13",
-    "@vue/cli-service": "~4.5.13",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.1.4",
     "typescript": "~4.1.5"
   }
