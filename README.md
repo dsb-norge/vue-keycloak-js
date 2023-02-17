@@ -147,13 +147,17 @@ These properties/functions are exposed:
 
 You can pass in an object as options to the plugin. The following keys are valid options. See below for description.
 
-| Key           | Type                 | Default                          |
-|---------------|----------------------|----------------------------------|
-| `config`      | String &#124; Object | `window.__BASEURL__ + '/config'` |
-| `init`        | Object               | `{onLoad: 'login-required'}`     |
-| `logout`      | Object               |                                  |
-| `onReady`     | Function(keycloak)   |                                  |
-| `onInitError` | Function(error)      |                                  |
+|          Key           |              Type              |             Default              |
+| ---------------------- | ------------------------------ | -------------------------------- |
+| `config`               | String &#124; Object           | `window.__BASEURL__ + '/config'` |
+| `init`                 | Object                         | `{onLoad: 'login-required'}`     |
+| `logout`               | Object                         |                                  |
+| `onReady`              | Function(keycloak)             |                                  |
+| `onInitError`          | Function(error, keycloakError) |                                  |
+| `onInitSuccess`        | Function(authenticated)        |                                  |
+| `onAuthLogout`         | Function(keycloak)             |                                  |
+| `onAuthRefreshError`   | Function(keycloak)             |                                  |
+| `onAuthRefreshSuccess` | Function(keycloak)             |                                  |
 
 ### config
 
@@ -261,6 +265,33 @@ This option is a callback function that is executed if Keycloak initialisation h
 
 The callback function has one parameter, which is the error object returned by Keycloak. Note that this may be undefined
 even though an error has occurred, as Keycloak does not return an error object in every error case.
+
+### onInitSuccess
+
+This option is a callback function that is executed if Keycloak initialisation has succeeded.
+
+The callback function has one parameter, which is the `authenticated` value returned by Keycloak's `init` method.
+
+### onAuthLogout
+
+This option is a callback function that is executed if the user is logged out (will only be called if the session status iframe is enabled, or in Cordova mode).
+
+The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
+instantiation.
+
+### onAuthRefreshError
+
+This option is a callback function that is executed if there was an error while trying to refresh the token.
+
+The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
+instantiation.
+
+### onAuthRefreshSuccess
+
+This option is a callback function that is executed when the token is refreshed.
+
+The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
+instantiation.
 
 ## Examples
 
