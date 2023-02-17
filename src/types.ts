@@ -49,6 +49,7 @@ export interface VueKeycloakOptions {
     VueKeycloak?: VueKeycloakInstance
   ) => void;
   onInitError?: (error: Error, err: KeycloakError) => void;
+  onAuthLogout?: (keycloak: Keycloak) => void;
   onAuthRefreshError?: (keycloak: Keycloak) => void;
   onAuthRefreshSuccess?: (keycloak: Keycloak) => void;
   onInitSuccess?(authenticated: boolean, keycloak?: Keycloak,

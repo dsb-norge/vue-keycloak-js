@@ -141,6 +141,11 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
     typeof options.onAuthRefreshError === 'function' &&
     options.onAuthRefreshError(keycloak)
   }
+  keycloak.onAuthLogout = function () {
+    updateWatchVariables(false)
+    typeof options.onAuthLogout === 'function' &&
+    options.onAuthLogout(keycloak)
+  }
   keycloak
     .init(options.init)
     .then((authenticated) => {
@@ -190,7 +195,7 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
 }
 
 function assertOptions(options: VueKeycloakOptions) {
-  const { config, init, onReady, onInitError, onAuthRefreshError } = options
+  const { config, init, onReady, onInitError, onAuthRefreshError, onAuthLogout } = options
   if (typeof config !== 'string' && !_isObject(config)) {
     return {
       hasError: true,
@@ -219,6 +224,12 @@ function assertOptions(options: VueKeycloakOptions) {
     return {
       hasError: true,
       error: `'onAuthRefreshError' option must be a function. Found: '${onAuthRefreshError}'`,
+    }
+  }
+  if (onAuthLogout && typeof onAuthLogout !== 'function') {
+    return {
+      hasError: true,
+      error: `'onAuthLogout' option must be a function. Found: '${onAuthLogout}'`,
     }
   }
   return {
