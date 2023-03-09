@@ -1,6 +1,6 @@
 {
-  "name": "@dsb-norge/vue-keycloak-js",
-  "version": "2.2.0",
+  "name": "@idc77/vue-keycloak-js",
+  "version": "2.2.1",
   "author": "Nils Lien",
   "description": "A Keycloak plugin for Vue >= 2.x",
   "main": "dist/dsb-vue-keycloak.cjs.js",
@@ -10,14 +10,14 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git@github.com:dsb-norge/vue-keycloak-js.git"
+    "url": "git@github.com:idc77/vue-keycloak-js.git"
   },
   "bugs": {
-    "url": "https://github.com/dsb-norge/vue-keycloak-js/issues"
+    "url": "https://github.com/idc77/vue-keycloak-js/issues"
   },
-  "homepage": "https://github.com/dsb-norge/vue-keycloak-js",
+  "homepage": "https://github.com/idc77/vue-keycloak-js",
   "dependencies": {
-    "keycloak-js": "18.0.1"
+    "keycloak-js": "21.0.1"
   },
   "keywords": [
     "vue",
@@ -25,19 +25,19 @@
   ],
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
-    "@babel/core": "7.20.12",
+    "@babel/core": "7.21.0",
     "@babel/preset-env": "7.20.2",
-    "@rollup/plugin-babel": "5.3.1",
-    "@rollup/plugin-commonjs": "22.0.2",
-    "@rollup/plugin-node-resolve": "13.3.0",
-    "@typescript-eslint/eslint-plugin": "5.49.0",
-    "@typescript-eslint/parser": "5.49.0",
-    "eslint": "8.32.0",
+    "@rollup/plugin-babel": "6.0.3",
+    "@rollup/plugin-commonjs": "24.0.1",
+    "@rollup/plugin-node-resolve": "15.0.1",
+    "@typescript-eslint/eslint-plugin": "5.54.1",
+    "@typescript-eslint/parser": "5.54.1",
+    "eslint": "8.35.0",
     "rollup": "2.79.1",
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-typescript2": "0.34.1",
-    "typescript": "4.9.4",
-    "vue": "3.2.45"
+    "typescript": "4.9.5",
+    "vue": "3.2.47"
   },
   "peerDependencies": {
     "vue": "^2.6.0 || >=3.0.0-rc.0"
