@@ -7,9 +7,9 @@ import type {
   VueKeycloakTokenParsed, Vue2Vue3App
 } from './types'
 
-let installed = false
+import { KeycloakSymbol } from './symbol'
 
-const KeycloakSymbol = Symbol('keycloak')
+let installed = false
 
 import * as vue from 'vue'
 
