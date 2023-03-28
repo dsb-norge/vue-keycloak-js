@@ -9,7 +9,7 @@ import type {
 
 let installed = false
 
-const KeycloakSymbol = Symbol('keycloak')
+export const KeycloakSymbol = Symbol('keycloak')
 
 import * as vue from 'vue'
 
