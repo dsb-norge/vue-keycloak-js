@@ -45,8 +45,6 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "version": "npm run build && git add -A",
-    "postversion": "git push -u --follow-tags origin main && npm publish",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix"
   },

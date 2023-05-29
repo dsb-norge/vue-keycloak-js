@@ -2,6 +2,8 @@ name: Lint frontend
 
 on:
   pull_request:
+    paths-ignore:
+      - '.github/**'
 
 jobs:
   run-linters:
@@ -15,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18
 
       - name: Install Node.js dependencies
         run: npm ci --ignore-scripts
