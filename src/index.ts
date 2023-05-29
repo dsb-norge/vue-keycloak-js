@@ -118,12 +118,25 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
   }
   keycloak.onAuthSuccess = function () {
     // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
-    // Refresh token if it's valid for less then 60 seconds
+    // Refresh token if it's valid for less than 60 seconds
     const updateTokenInterval = setInterval(
-      () =>
-        keycloak.updateToken(60).catch(() => {
-          keycloak.clearToken()
-        }),
+      () => {
+        keycloak.updateToken(60)
+          .then((updated) => {
+            if (options.init.enableLogging) {
+              if (updated) {
+                console.log('[vue-keycloak-js] Token updated')
+              } else {
+                console.log('[vue-keycloak-js] Token not updated')
+              }
+            }
+          })
+          .catch(error => {
+            if (options.init.enableLogging) {
+              console.log('[vue-keycloak-js] Error while updating token: ' + error)
+            }
+            keycloak.clearToken()
+          })},
       updateInterval ?? 10000
     )
     watch.logoutFn = () => {
