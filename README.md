@@ -392,12 +392,12 @@ Typescript example with vue 3
 [typescript_vue3](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/typescript_vue3)
 
 
-## Develop and deploy
+## How to release
 
 ```bash
-$ git clone https://github.com/dsb-norge/vue-keycloak-js.git
-# Do some work, add and/or commit to git.
+$ git checkout main
 $ npm version [major | minor | patch ]
+$ git push
 $ git push --tags
 ```
 
