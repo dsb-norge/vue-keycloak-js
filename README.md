@@ -397,11 +397,12 @@ Typescript example with vue 3
 ```bash
 $ git clone https://github.com/dsb-norge/vue-keycloak-js.git
 # Do some work, add and/or commit to git.
-$ npm version patch
+$ npm version [major | minor | patch ]
+$ git push --tags
 ```
 
-The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to
-the NPM registry.
+Go to GitHub and create a new release based on the latest tag.
+GitHub Actions will then build and publish the release to npmjs.com.
 
 ## Frequently asked questions
 
