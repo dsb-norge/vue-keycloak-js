@@ -9,7 +9,7 @@ vue-keycloak plugin
 ## Introduction
 
 This plugin uses the official Keycloak JS adapter
-https://github.com/keycloak/keycloak-js-bower
+https://github.com/keycloak/keycloak/tree/main/js/libs/keycloak-js
 
 Please read the documentation:
 http://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
@@ -26,24 +26,18 @@ will be redirected back to the application and remain unauthenticated.
 >
 > `keycloak.init({ onLoad: 'login-required' })`
 
-## Note on Vue 3
-
-Vue 3 support is in _beta_, starting from 2.0.0-beta. Any help is greatly appreciated!
-
-When Vue 3 is fully supported, we will release version 2.0.0.
-
 ## Installation
-
-### Install using yarn
-
-```
-yarn add @dsb-norge/vue-keycloak-js
-```
 
 ### Install using npm
 
 ```
 npm install @dsb-norge/vue-keycloak-js --save
+```
+
+### Install using yarn
+
+```
+yarn add @dsb-norge/vue-keycloak-js
 ```
 
 ## Usage
@@ -63,7 +57,7 @@ Vue.use(VueKeyCloak)
 Vue.use(VueKeyCloak, options)
 ```
 
-### Vue 3 (beta)
+### Vue 3
 
 > `createApp(App).use(VueKeycloak, [options])`
 
@@ -407,14 +401,6 @@ GitHub Actions will then build and publish the release to npmjs.com.
 ## Frequently asked questions
 
 We try to answer the most frequently asked questions here.
-
-### How can I specify client secret?
-
-Short answer: You should not.
-
-For some mysterious reasons, there is undocumented support for it in the Keycloak Javascript Adapter, but it makes little sense to use it. The secret must be present in the browser, and is therefore no longer a secret. See [issue 22](https://github.com/dsb-norge/vue-keycloak-js/issues/22).
-
-The client secret is [removed from Keycloak 8.0](https://www.keycloak.org/docs/latest/release_notes/index.html#credentials-support-removed-from-the-javascript-adapter).
 
 ### Localhost !== 127.0.0.1
 
