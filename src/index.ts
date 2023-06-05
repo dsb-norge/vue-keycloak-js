@@ -108,7 +108,7 @@ function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Pro
 }
 
 function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:VueKeycloakOptions) {
-  const keycloak = Keycloak(config)
+  const keycloak = new Keycloak(config)
   const { updateInterval } = options
 
   keycloak.onReady = function (authenticated) {
