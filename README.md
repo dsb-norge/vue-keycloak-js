@@ -9,7 +9,7 @@ vue-keycloak plugin
 ## Introduction
 
 This plugin uses the official Keycloak JS adapter
-https://github.com/keycloak/keycloak-js-bower
+https://github.com/keycloak/keycloak/tree/main/js/libs/keycloak-js
 
 Please read the documentation:
 http://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
@@ -26,24 +26,18 @@ will be redirected back to the application and remain unauthenticated.
 >
 > `keycloak.init({ onLoad: 'login-required' })`
 
-## Note on Vue 3
-
-Vue 3 support is in _beta_, starting from 2.0.0-beta. Any help is greatly appreciated!
-
-When Vue 3 is fully supported, we will release version 2.0.0.
-
 ## Installation
-
-### Install using yarn
-
-```
-yarn add @dsb-norge/vue-keycloak-js
-```
 
 ### Install using npm
 
 ```
 npm install @dsb-norge/vue-keycloak-js --save
+```
+
+### Install using yarn
+
+```
+yarn add @dsb-norge/vue-keycloak-js
 ```
 
 ## Usage
@@ -63,7 +57,7 @@ Vue.use(VueKeyCloak)
 Vue.use(VueKeyCloak, options)
 ```
 
-### Vue 3 (beta)
+### Vue 3
 
 > `createApp(App).use(VueKeycloak, [options])`
 
@@ -147,13 +141,17 @@ These properties/functions are exposed:
 
 You can pass in an object as options to the plugin. The following keys are valid options. See below for description.
 
-| Key           | Type                 | Default                          |
-|---------------|----------------------|----------------------------------|
-| `config`      | String &#124; Object | `window.__BASEURL__ + '/config'` |
-| `init`        | Object               | `{onLoad: 'login-required'}`     |
-| `logout`      | Object               |                                  |
-| `onReady`     | Function(keycloak)   |                                  |
-| `onInitError` | Function(error)      |                                  |
+|          Key           |              Type              |             Default              |
+| ---------------------- | ------------------------------ | -------------------------------- |
+| `config`               | String &#124; Object           | `window.__BASEURL__ + '/config'` |
+| `init`                 | Object                         | `{onLoad: 'login-required'}`     |
+| `logout`               | Object                         |                                  |
+| `onReady`              | Function(keycloak)             |                                  |
+| `onInitError`          | Function(error, keycloakError) |                                  |
+| `onInitSuccess`        | Function(authenticated)        |                                  |
+| `onAuthLogout`         | Function(keycloak)             |                                  |
+| `onAuthRefreshError`   | Function(keycloak)             |                                  |
+| `onAuthRefreshSuccess` | Function(keycloak)             |                                  |
 
 ### config
 
@@ -262,6 +260,33 @@ This option is a callback function that is executed if Keycloak initialisation h
 The callback function has one parameter, which is the error object returned by Keycloak. Note that this may be undefined
 even though an error has occurred, as Keycloak does not return an error object in every error case.
 
+### onInitSuccess
+
+This option is a callback function that is executed if Keycloak initialisation has succeeded.
+
+The callback function has one parameter, which is the `authenticated` value returned by Keycloak's `init` method.
+
+### onAuthLogout
+
+This option is a callback function that is executed if the user is logged out (will only be called if the session status iframe is enabled, or in Cordova mode).
+
+The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
+instantiation.
+
+### onAuthRefreshError
+
+This option is a callback function that is executed if there was an error while trying to refresh the token.
+
+The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
+instantiation.
+
+### onAuthRefreshSuccess
+
+This option is a callback function that is executed when the token is refreshed.
+
+The callback function has one parameter, which is the keycloak object returned from the Keycloak adapter on
+instantiation.
+
 ## Examples
 
 ### Supply a configuration object for the Keycloak constructor
@@ -361,28 +386,21 @@ Typescript example with vue 3
 [typescript_vue3](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/typescript_vue3)
 
 
-## Develop and deploy
+## How to release
 
 ```bash
-$ git clone https://github.com/dsb-norge/vue-keycloak-js.git
-# Do some work, add and/or commit to git.
-$ npm version patch
+$ git checkout main
+$ npm version [major | minor | patch ]
+$ git push
+$ git push --tags
 ```
 
-The command `npm version patch` will automatically run the build, push the branch upstream and publish the package to
-the NPM registry.
+Go to GitHub and create a new release based on the latest tag.
+GitHub Actions will then build and publish the release to npmjs.com.
 
 ## Frequently asked questions
 
 We try to answer the most frequently asked questions here.
-
-### How can I specify client secret?
-
-Short answer: You should not.
-
-For some mysterious reasons, there is undocumented support for it in the Keycloak Javascript Adapter, but it makes little sense to use it. The secret must be present in the browser, and is therefore no longer a secret. See [issue 22](https://github.com/dsb-norge/vue-keycloak-js/issues/22).
-
-The client secret is [removed from Keycloak 8.0](https://www.keycloak.org/docs/latest/release_notes/index.html#credentials-support-removed-from-the-javascript-adapter).
 
 ### Localhost !== 127.0.0.1
 

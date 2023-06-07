@@ -108,7 +108,7 @@ function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Pro
 }
 
 function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:VueKeycloakOptions) {
-  const keycloak = Keycloak(config)
+  const keycloak = new Keycloak(config)
   const { updateInterval } = options
 
   keycloak.onReady = function (authenticated) {
@@ -153,6 +153,11 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
     updateWatchVariables(false)
     typeof options.onAuthRefreshError === 'function' &&
     options.onAuthRefreshError(keycloak)
+  }
+  keycloak.onAuthLogout = function () {
+    updateWatchVariables(false)
+    typeof options.onAuthLogout === 'function' &&
+    options.onAuthLogout(keycloak)
   }
   keycloak
     .init(options.init)
@@ -203,7 +208,7 @@ function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:Vue
 }
 
 function assertOptions(options: VueKeycloakOptions) {
-  const { config, init, onReady, onInitError, onAuthRefreshError } = options
+  const { config, init, onReady, onInitError, onAuthRefreshError, onAuthLogout } = options
   if (typeof config !== 'string' && !_isObject(config)) {
     return {
       hasError: true,
@@ -232,6 +237,12 @@ function assertOptions(options: VueKeycloakOptions) {
     return {
       hasError: true,
       error: `'onAuthRefreshError' option must be a function. Found: '${onAuthRefreshError}'`,
+    }
+  }
+  if (onAuthLogout && typeof onAuthLogout !== 'function') {
+    return {
+      hasError: true,
+      error: `'onAuthLogout' option must be a function. Found: '${onAuthLogout}'`,
     }
   }
   return {

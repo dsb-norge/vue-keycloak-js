@@ -14,6 +14,7 @@ const name = 'dsb-vue-keycloak'
 const globals = {
   '@vue/reactivity': 'Reactivity',
   'keycloak-js': 'Keycloak',
+  'vue': 'Vue'
 }
 const inlineDynamicImports = true
 
@@ -47,7 +48,7 @@ export default {
       name,
       globals,
       inlineDynamicImports
-    },
+    }
   ],
   plugins: [
     resolve(), // so Rollup can find `keycloak-js`
