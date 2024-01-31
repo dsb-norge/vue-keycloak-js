@@ -4,7 +4,6 @@ import type {
   KeycloakInitOptions,
   KeycloakLoginOptions,
   KeycloakProfile,
-  KeycloakPromise,
   KeycloakResourceAccess,
   KeycloakRoles,
   KeycloakTokenParsed,
@@ -19,7 +18,6 @@ export {
   Keycloak,
   KeycloakLoginOptions,
   KeycloakProfile,
-  KeycloakPromise,
   KeycloakResourceAccess,
   KeycloakRoles,
   KeycloakTokenParsed,
@@ -65,20 +63,20 @@ export interface VueKeycloakInstance {
   authenticated: boolean;
   userName?: string; // Username from Keycloak. Collected from tokenParsed['preferred_username']
   fullName?: string; // Full name from Keycloak. Collected from tokenParsed['name']
-  login?(options?: KeycloakLoginOptions): KeycloakPromise<void, void>; // [Keycloak] login function
-  loginFn?(options?: KeycloakLoginOptions): KeycloakPromise<void, void>; // Alias for login
+  login?(options?: KeycloakLoginOptions): Promise<void>; // [Keycloak] login function
+  loginFn?(options?: KeycloakLoginOptions): Promise<void>; // Alias for login
   // This is not defined in keycloak
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  logoutFn?(options?: any): KeycloakPromise<void, void> | void; // Keycloak logout function
+  logoutFn?(options?: any): Promise<void> | void; // Keycloak logout function
   createLoginUrl?(options?: KeycloakLoginOptions): string; // Keycloak createLoginUrl function
   // This is not defined in keycloak
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createLogoutUrl?(options?: any): string; // Keycloak createLogoutUrl function
   createRegisterUrl?(options?: KeycloakLoginOptions): string; // Keycloak createRegisterUrl function
-  register?(options?: KeycloakLoginOptions): KeycloakPromise<void, void>; // Keycloak register function
-  accountManagement?(): KeycloakPromise<void, void>; // Keycloak accountManagement function
+  register?(options?: KeycloakLoginOptions): Promise<void>; // Keycloak register function
+  accountManagement?(): Promise<void>; // Keycloak accountManagement function
   createAccountUrl?(): string; // Keycloak createAccountUrl function
-  loadUserProfile?(): KeycloakPromise<KeycloakProfile, void>; // Keycloak loadUserProfile function
+  loadUserProfile?(): Promise<KeycloakProfile>; // Keycloak loadUserProfile function
   subject?: string; // The user id
   idToken?: string; // The base64 encoded ID token.
   idTokenParsed?: VueKeycloakTokenParsed; // The parsed id token as a JavaScript object.
