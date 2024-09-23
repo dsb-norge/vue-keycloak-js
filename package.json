@@ -29,7 +29,7 @@
     "@babel/preset-env": "7.25.4",
     "@rollup/plugin-babel": "5.3.1",
     "@rollup/plugin-commonjs": "25.0.8",
-    "@rollup/plugin-node-resolve": "15.2.3",
+    "@rollup/plugin-node-resolve": "15.2.4",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "eslint": "8.57.1",
