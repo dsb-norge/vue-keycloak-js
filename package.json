@@ -1,5 +1,5 @@
 {
-  "name": "@dsb-norge/vue-keycloak-js",
+  "name": "@schmidi000/vue-keycloak-js",
   "version": "2.4.1",
   "author": "Norwegian Directorate for Civil Protection",
   "description": "A Keycloak plugin for Vue >= 2.x",
