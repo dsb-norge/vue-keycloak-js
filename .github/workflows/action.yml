@@ -23,6 +23,9 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true
+        run: npm run lint
+# not compatible with eslint 9 as of wearerequired/lint-action@v2
+#      - name: Run linters
+#        uses: wearerequired/lint-action@v2
+#        with:
+#          eslint: true
