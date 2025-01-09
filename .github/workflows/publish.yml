@@ -13,12 +13,12 @@ jobs:
       id-token: write
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           registry-url: "https://registry.npmjs.org"
 
       - name: Install latest npm
@@ -31,6 +31,11 @@ jobs:
         run: npm run build
 
       - name: Publish
-        run: npm publish --provenance --access public
+        run: |
+          if [ "${{ github.event.release.prerelease }}" = "true" ]; then
+            npm publish --provenance --access public --tag next
+          else
+            npm publish --provenance --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.ORG_NPM_TOKEN }}
