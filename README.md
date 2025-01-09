@@ -12,7 +12,7 @@ This plugin uses the official Keycloak JS adapter
 https://github.com/keycloak/keycloak/tree/main/js/libs/keycloak-js
 
 Please read the documentation:
-http://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
+https://www.keycloak.org/securing-apps/javascript-adapter
 
 #### Excerpt from Keycloak JS doc:
 
@@ -41,23 +41,6 @@ yarn add @dsb-norge/vue-keycloak-js
 ```
 
 ## Usage
-
-### Vue 2
-
-> `Vue.use(VueKeyCloak, [options])`
-
-Tell Vue to install the plugin, and optionally pass in a JavaScript object for additional configuration.
-
-```javascript
-import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
-
-Vue.use(VueKeyCloak)
-
-// You can also pass in options. Check options reference below.
-Vue.use(VueKeyCloak, options)
-```
-
-### Vue 3
 
 > `createApp(App).use(VueKeycloak, [options])`
 
@@ -89,24 +72,64 @@ declare module '@vue/runtime-core' {
 }
 ```
 
-The plugin adds a `$keycloak` property to the global Vue instance.
+### Getting access to keycloak properties/functions
+
+```vue
+<script>
+import { useKeycloak } from '@dsb-norge/vue-keycloak-js'
+
+export default {
+  setup() {
+    const keycloak = useKeycloak()
+
+    // Use the properties/functions
+
+    return {
+      keycloak
+    }
+  }
+}
+</script>
+
+<template>
+  <p>{{ keycloak.authenticated }}</p>
+</template>
+```
+
+Or with compile-time syntactic sugar
+```vue
+<script setup>
+import { useKeycloak } from '@dsb-norge/vue-keycloak-js'
+
+const keycloak = useKeycloak()
+
+// Use the properties/functions
+</script>
+
+<template>
+  <p>{{ keycloak.authenticated }}</p>
+</template>
+```
+
+The plugin also adds a `$keycloak` property to the global Vue instance.
 This shadows most of the keycloak instance's properties and functions.
 All other variables & functions can be found on `$keycloak.keycloak` attribute
 
-Internally for Vue 2:
- * [Vue.observable](https://vuejs.org/v2/api/#Vue-observable)
+```vue
+<template>
+  <p>{{ $keycloak.authenticated }}</p>
+</template>
+```
 
-Internally for Vue 3
-* [reactive](https://v3.vuejs.org/guide/reactivity-fundamentals.html#declaring-reactive-state)
-
-This object is reactive and will update with new tokens and other information
+This object from both of these methods is [reactive](https://v3.vuejs.org/guide/reactivity-fundamentals.html#declaring-reactive-state) and will update with new tokens and other information
+automatically.
 
 These properties/functions are exposed:
 
 ```
 {
   ready: Boolean,              // Flag indicating whether Keycloak has initialised and is ready
-  authenticated: Boolean,
+  authenticated: Boolean,      // Flag indicating whether the user is authenticated
   userName: String,            // Username from Keycloak. Collected from tokenParsed['preferred_username']
   fullName: String,            // Full name from Keycloak. Collected from tokenParsed['name']
   login: Function,             // [Keycloak] login function
@@ -156,7 +179,7 @@ You can pass in an object as options to the plugin. The following keys are valid
 ### config
 
 The config object, either returned from an endpoint (string) or
-set directly (object), must be compatible with the [Keycloak JS adapter](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter) constructor arguments.
+set directly (object), must be compatible with the [Keycloak JS adapter](https://www.keycloak.org/securing-apps/javascript-adapter#_using_the_adapter) constructor arguments.
 
 See description below.
 
@@ -172,7 +195,7 @@ If no `window.__BASEURL__` exists, `/config` is used.
 The return value from the request is used as constructor parameters for the Keycloak adapter.
 As such, it should be an object with valid keys/values.
 
-[See Keycloak's Javascript adapter reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference)
+[See Keycloak's Javascript adapter reference](https://www.keycloak.org/securing-apps/javascript-adapter#_using_the_adapter)
 
 E.g.
 
@@ -188,7 +211,7 @@ These values will be used as constructor parameters to the official Keycloak ada
 
 #### Object
 
-If this option is an object, it will be passed on as constructor parameters for the [Keycloak adapter](https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference).
+If this option is an object, it will be passed on as constructor parameters for the [Keycloak adapter](https://www.keycloak.org/securing-apps/javascript-adapter#_using_the_adapter).
 No HTTP GET request is done in this case.
 
 ### init
@@ -211,18 +234,15 @@ One use case for this callback could be to instantiate and mount the Vue applica
 authentication and the `$keycloak` property are properly finished and hydrated with data:
 
 ```javascript
-Vue.use(VueKeyCloak, {
-  onReady: (keycloak) => {
-    console.log(`I wonder what Keycloak returns: ${keycloak}`)
-    /* eslint-disable no-new */
-    new Vue({
-      el: '#app',
-      router,
-      template: '<App/>',
-      render: h => h(App)
-    })
-  }
-})
+import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
+
+createApp(App)
+  .use(VueKeyCloak, {
+    onReady: (keycloak) => {
+      console.log(`I wonder what Keycloak returns: ${keycloak}`)
+    }
+  })
+  .mount('#app')
 ```
 
 In conjunction with the above, you might find it useful to intercept e.g. axios and set the token on each request:
@@ -230,8 +250,12 @@ In conjunction with the above, you might find it useful to intercept e.g. axios 
 ```javascript
 function tokenInterceptor () {
   axios.interceptors.request.use(config => {
-    if (Vue.prototype.$keycloak.authenticated) {
-      config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
+    const keycloak = useKeycloak()
+    if (keycloak.authenticated) {
+      // Note that this is a simple example.
+      // you should be careful not to leak tokens to third parties.
+      // in this example the token is added to all usage of axios.
+      config.headers.Authorization = `Bearer ${keycloak.token}`
     }
     return config
   }, error => {
@@ -239,18 +263,13 @@ function tokenInterceptor () {
   })
 }
 
-Vue.use(VueKeyCloak, {
-  onReady: (keycloak) => {
-    tokenInterceptor()
-    /* eslint-disable no-new */
-    new Vue({
-      el: '#app',
-      router,
-      template: '<App/>',
-      render: h => h(App)
-    })
-  }
-})
+createApp(App)
+  .use(VueKeyCloak, {
+    onReady: (keycloak) => {
+      tokenInterceptor()
+    }
+  })
+  .mount('#app')
 ```
 
 ### onInitError
@@ -292,34 +311,28 @@ instantiation.
 ### Supply a configuration object for the Keycloak constructor
 
 ```javascript
-Vue.use(VueKeyCloak, {
-  config: {
-    realm: 'MyRealm',
-    url: 'https://my.keycloak.server/auth',
-    clientId: 'MyClientId'
-  },
-  onReady: kc => {
-    new Vue({
-      render: h => h(App)
-    }).$mount('#app')
-  }
-})
+createApp(App)
+  .use(VueKeyCloak, {
+    config: {
+      realm: 'MyRealm',
+      url: 'https://my.keycloak.server',
+      clientId: 'MyClientId'
+    }
+  })
+  .mount('#app')
 ```
 
 ### Supply init option (disable monitoring login state)
 
 ```javascript
-Vue.use(VueKeyCloak, {
-  init: {
-    onLoad: 'login-required',
-    checkLoginIframe: false
-  },
-  onReady: kc => {
-    new Vue({
-      render: h => h(App)
-    }).$mount('#app')
-  }
-})
+createApp(App)
+  .use(VueKeyCloak, {
+    init: {
+      onLoad: 'login-required',
+      checkLoginIframe: false
+    },
+  })
+  .mount('#app')
 ```
 
 ### Supply init option (use `check-sso`)
@@ -331,59 +344,38 @@ in the init object. So without passing an `init` object as argument, the default
 
 ##### To avoid waiting for configuration endpoint before loading vue app:
 ```javascript
-Vue.use(VueKeyCloak, {
-  init: {
-    onLoad: 'check-sso'
-  }
-})
-
-new Vue({
-  render: h => h(App)
-}).$mount('#app')
+createApp(App)
+  .use(VueKeyCloak, {
+    init: {
+      onLoad: 'check-sso'
+    },
+  })
+  .mount('#app')
 ```
 
 ##### Wait until keycloak adapter is ready before loading vue app:
 ```javascript
-Vue.use(VueKeyCloak, {
+const app = createApp(App)
+app.use(VueKeyCloak, {
   init: {
     onLoad: 'check-sso'
   },
   onReady: kc => {
-    new Vue({
-      render: h => h(App)
-    }).$mount('#app')
-  }
-})
-```
-
-### Specify a `redirectUri`
-
-```javascript
-Vue.use(VueKeyCloak, {
-  logout: {
-    redirectUri: 'https://mydomain.lives.here.com'
-  },
-  onReady: kc => {
-    new Vue({
-      render: h => h(App)
-    }).$mount('#app')
+    app.mount('#app')
   }
 })
 ```
 
 ### Example applications
 
-View a complete example app, with router guards:
+You can find different examples in the [examples](./examples) folder.
 
-[hello-keycloak](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/hello-keycloak)
 
-Simple 'in component' secret displaying reactiveness:
+#### Simple 'in component' secret displaying properties/functions: [simple](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/simple)
 
-[simple_vue2](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/simple_vue2)
+#### Simple example written in TypeScript: [typescript](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/typescript)
 
-Typescript example with vue 3
-
-[typescript_vue3](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/typescript_vue3)
+#### Example with axios interceptors showing how to do secure requests: [axios-interceptor](https://github.com/dsb-norge/vue-keycloak-js/tree/master/examples/axios-interceptor)
 
 
 ## How to release

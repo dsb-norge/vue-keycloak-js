@@ -1,0 +1,29 @@
+{
+  "name": "typescript",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build"
+  },
+  "dependencies": {
+    "@dsb-norge/vue-keycloak-js": "3.0.0",
+    "axios": "1.7.9",
+    "vue": "3.5.13"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "22.0.0",
+    "@types/node": "22.10.5",
+    "@vitejs/plugin-vue": "5.2.1",
+    "@vue/tsconfig": "0.7.0",
+    "npm-run-all2": "7.0.2",
+    "typescript": "5.6.3",
+    "vite": "6.0.7",
+    "vite-plugin-vue-devtools": "7.7.0",
+    "vue-tsc": "2.2.0"
+  }
+}

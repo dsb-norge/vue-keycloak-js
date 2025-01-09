@@ -3,8 +3,8 @@ import type {
   KeycloakError,
   KeycloakInitOptions,
   KeycloakLoginOptions,
+  KeycloakLogoutOptions,
   KeycloakProfile,
-  KeycloakPromise,
   KeycloakResourceAccess,
   KeycloakRoles,
   KeycloakTokenParsed,
@@ -19,20 +19,9 @@ export {
   Keycloak,
   KeycloakLoginOptions,
   KeycloakProfile,
-  KeycloakPromise,
   KeycloakResourceAccess,
   KeycloakRoles,
   KeycloakTokenParsed,
-}
-
-export interface Vue2Vue3App {
-  prototype?: unknown,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  observable?: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config?: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  provide?: any
 }
 
 export type VueKeycloakConfig = KeycloakConfig | string;
@@ -40,9 +29,7 @@ export type VueKeycloakConfig = KeycloakConfig | string;
 export interface VueKeycloakOptions {
   config?: VueKeycloakConfig;
   init?: KeycloakInitOptions;
-  // This is not defined in keycloak
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  logout?: any;
+  logout?: KeycloakLogoutOptions | undefined;
   updateInterval?: number;
   onReady?: (
     keycloak: Keycloak,
@@ -65,20 +52,16 @@ export interface VueKeycloakInstance {
   authenticated: boolean;
   userName?: string; // Username from Keycloak. Collected from tokenParsed['preferred_username']
   fullName?: string; // Full name from Keycloak. Collected from tokenParsed['name']
-  login?(options?: KeycloakLoginOptions): KeycloakPromise<void, void>; // [Keycloak] login function
-  loginFn?(options?: KeycloakLoginOptions): KeycloakPromise<void, void>; // Alias for login
-  // This is not defined in keycloak
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  logoutFn?(options?: any): KeycloakPromise<void, void> | void; // Keycloak logout function
-  createLoginUrl?(options?: KeycloakLoginOptions): string; // Keycloak createLoginUrl function
-  // This is not defined in keycloak
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createLogoutUrl?(options?: any): string; // Keycloak createLogoutUrl function
-  createRegisterUrl?(options?: KeycloakLoginOptions): string; // Keycloak createRegisterUrl function
-  register?(options?: KeycloakLoginOptions): KeycloakPromise<void, void>; // Keycloak register function
-  accountManagement?(): KeycloakPromise<void, void>; // Keycloak accountManagement function
+  login?(options?: KeycloakLoginOptions): Promise<void>; // [Keycloak] login function
+  loginFn?(options?: KeycloakLoginOptions): Promise<void>; // Alias for login
+  logoutFn?(options?: Keycloak['logout']): Promise<void> | void; // Keycloak logout function
+  createLoginUrl?(options?: KeycloakLoginOptions): Promise<string>; // Keycloak createLoginUrl function
+  createLogoutUrl?(options?: KeycloakLogoutOptions): string; // Keycloak createLogoutUrl function
+  createRegisterUrl?(options?: KeycloakLoginOptions): Promise<string>; // Keycloak createRegisterUrl function
+  register?(options?: KeycloakLoginOptions): Promise<void>; // Keycloak register function
+  accountManagement?(): Promise<void>; // Keycloak accountManagement function
   createAccountUrl?(): string; // Keycloak createAccountUrl function
-  loadUserProfile?(): KeycloakPromise<KeycloakProfile, void>; // Keycloak loadUserProfile function
+  loadUserProfile?(): Promise<KeycloakProfile>; // Keycloak loadUserProfile function
   subject?: string; // The user id
   idToken?: string; // The base64 encoded ID token.
   idTokenParsed?: VueKeycloakTokenParsed; // The parsed id token as a JavaScript object.
@@ -86,12 +69,12 @@ export interface VueKeycloakInstance {
   resourceAccess?: KeycloakResourceAccess; // The resource roles associated with the token.
   refreshToken?: string; // The base64 encoded refresh token that can be used to retrieve a new token.
   refreshTokenParsed?: VueKeycloakTokenParsed; // The parsed refresh token as a JavaScript object.
-  timeSkew?: number; // The estimated time difference between the browser time and the Keycloak server in seconds. This value is just an estimation, but is accurate enough when determining if a token is expired or not.
+  timeSkew?: number; // The estimated time difference between the browser time and the Keycloak server in seconds.
   responseMode?: string; // Response mode passed in init (default value is fragment).
-  responseType?: string; // Response type sent to Keycloak with login requests. This is determined based on the flow value used during initialization, but can be overridden by setting this value.
+  responseType?: string; // Response type sent to Keycloak with login requests.
   hasRealmRole?(role: string): boolean; // Keycloak hasRealmRole function
   hasResourceRole?(role: string, resource?: string): boolean; // Keycloak hasResourceRole function
   token?: string; // The base64 encoded token that can be sent in the Authorization header in requests to services
   tokenParsed?: VueKeycloakTokenParsed; // The parsed token as a JavaScript object
-  keycloak?: Keycloak; // The original keycloak instance 'as is' from keycloak-js adapter
+  keycloak?: Keycloak; // The original keycloak instance from keycloak-js adapter
 }
