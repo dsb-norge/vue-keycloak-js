@@ -4,18 +4,15 @@ import type {
   VueKeycloakOptions,
   VueKeycloakInstance,
   KeycloakError,
-  VueKeycloakTokenParsed, Vue2Vue3App
+  VueKeycloakTokenParsed
 } from './types'
+import { type App, DeepReadonly, Reactive, reactive, readonly } from 'vue'
 
 let installed = false
-
-const KeycloakSymbol = Symbol('keycloak')
-
-import * as vue from 'vue'
+const keycloakStore: Reactive<VueKeycloakInstance> = reactive(defaultEmptyVueKeycloakInstance())
 
 export default {
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  install: async function (app: Vue2Vue3App, params: VueKeycloakOptions = {}) {
+  install: function (app: App, params: VueKeycloakOptions = {}) {
     if (installed) return
     installed = true
 
@@ -24,185 +21,167 @@ export default {
       init: { onLoad: 'login-required' },
     }
     const options = Object.assign({}, defaultParams, params)
-    if (assertOptions(options).hasError)
-      throw new Error(`Invalid options given: ${assertOptions(options).error}`)
 
-    const watch = await vue2AndVue3Reactive(
-      app,
-      defaultEmptyVueKeycloakInstance()
-    )
+    // Simplify option assertion
+    const assertion = assertOptions(options)
+    if (assertion.hasError)
+      throw new Error(`Invalid options given: ${assertion.error}`)
+
+    app.config.globalProperties.$keycloak =  readonly(keycloakStore)
+
+    if (!options.config) {
+      throw new Error('Keycloak config is required')
+    }
+
     getConfig(options.config)
       .then((config: VueKeycloakConfig) => {
-        init(config, watch, options)
+        init(config, keycloakStore, options)
       })
       .catch((err) => {
         console.log(err)
       })
-  },
-  KeycloakSymbol
+  }
+}
+
+export function useKeycloak (): DeepReadonly<VueKeycloakInstance> {
+  return readonly(keycloakStore)
 }
 
 function defaultEmptyVueKeycloakInstance(): VueKeycloakInstance {
   return {
     ready: false,
     authenticated: false,
-    userName: null,
-    fullName: null,
-    token: null,
-    tokenParsed: null,
-    logoutFn: null,
-    loginFn: null,
-    login: null,
-    createLoginUrl: null,
-    createLogoutUrl: null,
-    createRegisterUrl: null,
-    register: null,
-    accountManagement: null,
-    createAccountUrl: null,
-    loadUserProfile: null,
-    subject: null,
-    idToken: null,
-    idTokenParsed: null,
-    realmAccess: null,
-    resourceAccess: null,
-    refreshToken: null,
-    refreshTokenParsed: null,
-    timeSkew: null,
-    responseMode: null,
-    responseType: null,
-    hasRealmRole: null,
-    hasResourceRole: null,
-    keycloak: null,
+    userName: undefined,
+    fullName: undefined,
+    token: undefined,
+    tokenParsed: undefined,
+    logoutFn: undefined,
+    loginFn: undefined,
+    login: undefined,
+    createLoginUrl: undefined,
+    createLogoutUrl: undefined,
+    createRegisterUrl: undefined,
+    register: undefined,
+    accountManagement: undefined,
+    createAccountUrl: undefined,
+    loadUserProfile: undefined,
+    subject: undefined,
+    idToken: undefined,
+    idTokenParsed: undefined,
+    realmAccess: undefined,
+    resourceAccess: undefined,
+    refreshToken: undefined,
+    refreshTokenParsed: undefined,
+    timeSkew: undefined,
+    responseMode: undefined,
+    responseType: undefined,
+    hasRealmRole: undefined,
+    hasResourceRole: undefined,
+    keycloak: undefined,
   }
 }
 
-function vue2AndVue3Reactive(app: Vue2Vue3App, object: VueKeycloakInstance): Promise<VueKeycloakInstance> {
-  return new Promise((resolve, reject) => {
-    if (app.prototype) {
-      // Vue 2
-      try {
-        const reactiveObj = app.observable(object)
-        Object.defineProperty(app.prototype, '$keycloak', {
-          get() {
-            return reactiveObj
-          }
-        })
-        resolve(reactiveObj)
-      } catch (e) {
-        reject(e)
-      }
-    } else {
-      // Vue 3
-      // Assign an object immediately to allow usage of $keycloak in view
-
-      //const vue = await import('vue')
-      // Async load module to allow vue 2 to not have the dependency.
-      const reactiveObj = vue.reactive(object)
-      // Override the existing reactiveObj so references contains the new reactive values
-      app.config.globalProperties.$keycloak =  reactiveObj
-      // Use provide/inject in Vue3 apps
-      app.provide(KeycloakSymbol, reactiveObj)
-      resolve(reactiveObj)
-    }
-  })
-}
-
-function init(config: VueKeycloakConfig, watch: VueKeycloakInstance, options:VueKeycloakOptions) {
+async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstance>, options: VueKeycloakOptions) {
   const keycloak = new Keycloak(config)
   const { updateInterval } = options
 
-  keycloak.onReady = function (authenticated) {
-    updateWatchVariables(authenticated)
-    watch.ready = true
-    typeof options.onReady === 'function' && options.onReady(keycloak, watch)
+  function updateWatchVariables(isAuthenticated = false) {
+    store.authenticated = isAuthenticated
+    store.loginFn = keycloak.login
+    store.login = keycloak.login
+    store.createLoginUrl = keycloak.createLoginUrl
+    store.createLogoutUrl = keycloak.createLogoutUrl
+    store.createRegisterUrl = keycloak.createRegisterUrl
+    store.register = keycloak.register
+    store.keycloak = keycloak
+    if (isAuthenticated) {
+      store.accountManagement = keycloak.accountManagement
+      store.createAccountUrl = keycloak.createAccountUrl
+      store.hasRealmRole = keycloak.hasRealmRole
+      store.hasResourceRole = keycloak.hasResourceRole
+      store.loadUserProfile = keycloak.loadUserProfile
+      store.token = keycloak.token
+      store.subject = keycloak.subject
+      store.idToken = keycloak.idToken
+      store.idTokenParsed = keycloak.idTokenParsed
+      store.realmAccess = keycloak.realmAccess
+      store.resourceAccess = keycloak.resourceAccess
+      store.refreshToken = keycloak.refreshToken
+      store.refreshTokenParsed = keycloak.refreshTokenParsed
+      store.timeSkew = keycloak.timeSkew
+      store.responseMode = keycloak.responseMode
+      store.responseType = keycloak.responseType
+      store.tokenParsed = keycloak.tokenParsed
+      store.userName = (keycloak.tokenParsed as VueKeycloakTokenParsed)['preferred_username']
+      store.fullName = (keycloak.tokenParsed as VueKeycloakTokenParsed)['name']
+    }
   }
+
+  keycloak.onReady = function (authenticated: boolean) {
+    updateWatchVariables(authenticated)
+    store.ready = true
+    if (typeof options.onReady === 'function') {
+      options.onReady(keycloak, store)
+    }
+  }
+
   keycloak.onAuthSuccess = function () {
-    // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
-    // Refresh token if it's valid for less than 60 seconds
     const updateTokenInterval = setInterval(
       () => {
         keycloak.updateToken(60)
-          .then((updated) => {
-            if (options.init.enableLogging) {
-              if (updated) {
-                console.log('[vue-keycloak-js] Token updated')
-              } else {
-                console.log('[vue-keycloak-js] Token not updated')
-              }
+          .then((updated: boolean) => {
+            if (options.init?.enableLogging) {
+              console.log(`[vue-keycloak-js] Token ${updated ? 'updated' : 'not updated'}`)
             }
           })
-          .catch(error => {
-            if (options.init.enableLogging) {
-              console.log('[vue-keycloak-js] Error while updating token: ' + error)
+          .catch((error: unknown) => {
+            if (options.init?.enableLogging) {
+              console.log(`[vue-keycloak-js] Error while updating token: ${error}`)
             }
             keycloak.clearToken()
           })},
       updateInterval ?? 10000
     )
-    watch.logoutFn = () => {
+    store.logoutFn = () => {
       clearInterval(updateTokenInterval)
-      keycloak.logout(options.logout)
+      return keycloak.logout(options.logout)
     }
   }
+
   keycloak.onAuthRefreshSuccess = function () {
     updateWatchVariables(true)
-    typeof options.onAuthRefreshSuccess === 'function' &&
-    options.onAuthRefreshSuccess(keycloak)
+    if (typeof options.onAuthRefreshSuccess === 'function') {
+      options.onAuthRefreshSuccess(keycloak)
+    }
   }
+
   keycloak.onAuthRefreshError = function () {
     updateWatchVariables(false)
-    typeof options.onAuthRefreshError === 'function' &&
-    options.onAuthRefreshError(keycloak)
+    if (typeof options.onAuthRefreshError === 'function') {
+      options.onAuthRefreshError(keycloak)
+    }
   }
+
   keycloak.onAuthLogout = function () {
     updateWatchVariables(false)
-    typeof options.onAuthLogout === 'function' &&
-    options.onAuthLogout(keycloak)
+    if (typeof options.onAuthLogout === 'function') {
+      options.onAuthLogout(keycloak)
+    }
   }
-  keycloak
-    .init(options.init)
-    .then((authenticated) => {
-      updateWatchVariables(authenticated)
-      typeof options.onInitSuccess === 'function' &&
-      options.onInitSuccess(authenticated)
-    })
-    .catch((err:KeycloakError) => {
-      updateWatchVariables(false)
-      const error = Error('Failure during initialization of keycloak-js adapter')
-      typeof options.onInitError === 'function'
-        ? options.onInitError(error, err)
-        : console.error(error, err)
-    })
 
-  function updateWatchVariables(isAuthenticated = false) {
-    watch.authenticated = isAuthenticated
-    watch.loginFn = keycloak.login
-    watch.login = keycloak.login
-    watch.createLoginUrl = keycloak.createLoginUrl
-    watch.createLogoutUrl = keycloak.createLogoutUrl
-    watch.createRegisterUrl = keycloak.createRegisterUrl
-    watch.register = keycloak.register
-    watch.keycloak = keycloak
-    if (isAuthenticated) {
-      watch.accountManagement = keycloak.accountManagement
-      watch.createAccountUrl = keycloak.createAccountUrl
-      watch.hasRealmRole = keycloak.hasRealmRole
-      watch.hasResourceRole = keycloak.hasResourceRole
-      watch.loadUserProfile = keycloak.loadUserProfile
-      watch.token = keycloak.token
-      watch.subject = keycloak.subject
-      watch.idToken = keycloak.idToken
-      watch.idTokenParsed = keycloak.idTokenParsed
-      watch.realmAccess = keycloak.realmAccess
-      watch.resourceAccess = keycloak.resourceAccess
-      watch.refreshToken = keycloak.refreshToken
-      watch.refreshTokenParsed = keycloak.refreshTokenParsed
-      watch.timeSkew = keycloak.timeSkew
-      watch.responseMode = keycloak.responseMode
-      watch.responseType = keycloak.responseType
-      watch.tokenParsed = keycloak.tokenParsed
-      watch.userName = (keycloak.tokenParsed as VueKeycloakTokenParsed)['preferred_username']
-      watch.fullName = (keycloak.tokenParsed as VueKeycloakTokenParsed)['name']
+  try {
+    const authenticated = await keycloak.init(options.init)
+    updateWatchVariables(authenticated)
+    if (typeof options.onInitSuccess === 'function') {
+      options.onInitSuccess(authenticated)
+    }
+  } catch (err: unknown) {
+    updateWatchVariables(false)
+    const error = new Error('Failure during initialization of keycloak-js adapter', { cause: err })
+    if (typeof options.onInitError === 'function') {
+      options.onInitError(error, err as KeycloakError)
+    } else {
+      console.error(error, err)
     }
   }
 }
@@ -212,10 +191,10 @@ function assertOptions(options: VueKeycloakOptions) {
   if (typeof config !== 'string' && !_isObject(config)) {
     return {
       hasError: true,
-      error: `'config' option must be a string or an object. Found: '${config}'`,
+      error: `'config' option must be a string or an object. Found: '${typeof config}'`,
     }
   }
-  if (!_isObject(init) || typeof init.onLoad !== 'string') {
+  if (!_isObject(init) || typeof init?.onLoad !== 'string') {
     return {
       hasError: true,
       error: `'init' option must be an object with an 'onLoad' property. Found: '${init}'`,
@@ -224,25 +203,25 @@ function assertOptions(options: VueKeycloakOptions) {
   if (onReady && typeof onReady !== 'function') {
     return {
       hasError: true,
-      error: `'onReady' option must be a function. Found: '${onReady}'`,
+      error: `'onReady' option must be a function. Found: '${typeof onReady}'`,
     }
   }
   if (onInitError && typeof onInitError !== 'function') {
     return {
       hasError: true,
-      error: `'onInitError' option must be a function. Found: '${onInitError}'`,
+      error: `'onInitError' option must be a function. Found: '${typeof onInitError}'`,
     }
   }
   if (onAuthRefreshError && typeof onAuthRefreshError !== 'function') {
     return {
       hasError: true,
-      error: `'onAuthRefreshError' option must be a function. Found: '${onAuthRefreshError}'`,
+      error: `'onAuthRefreshError' option must be a function. Found: '${typeof onAuthRefreshError}'`,
     }
   }
   if (onAuthLogout && typeof onAuthLogout !== 'function') {
     return {
       hasError: true,
-      error: `'onAuthLogout' option must be a function. Found: '${onAuthLogout}'`,
+      error: `'onAuthLogout' option must be a function. Found: '${typeof onAuthLogout}'`,
     }
   }
   return {
@@ -251,29 +230,21 @@ function assertOptions(options: VueKeycloakOptions) {
   }
 }
 
+function getConfig(config: VueKeycloakConfig): Promise<VueKeycloakConfig> {
+  if (_isObject(config)) return Promise.resolve(config)
+  return fetch(config as string, { headers: { 'Accept': 'application/json' } })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch config: ${response.statusText}`)
+      }
+      return response.json()
+    })
+}
+
 function _isObject(obj: unknown) {
   return (
     obj !== null &&
     typeof obj === 'object' &&
     Object.prototype.toString.call(obj) !== '[object Array]'
   )
-}
-
-function getConfig(config: VueKeycloakConfig) {
-  if (_isObject(config)) return Promise.resolve(config)
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-    xhr.open('GET', config as string)
-    xhr.setRequestHeader('Accept', 'application/json')
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          resolve(JSON.parse(xhr.responseText))
-        } else {
-          reject(Error(xhr.statusText))
-        }
-      }
-    }
-    xhr.send()
-  })
 }
