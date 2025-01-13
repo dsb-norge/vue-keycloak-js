@@ -1,9 +1,9 @@
 import Keycloak from 'keycloak-js'
+import type { KeycloakError } from 'keycloak-js'
 import type {
   VueKeycloakConfig,
   VueKeycloakOptions,
   VueKeycloakInstance,
-  KeycloakError,
   VueKeycloakTokenParsed
 } from './types'
 import { type App, DeepReadonly, Reactive, reactive, readonly } from 'vue'
@@ -248,3 +248,10 @@ function _isObject(obj: unknown) {
     Object.prototype.toString.call(obj) !== '[object Array]'
   )
 }
+
+export type {
+  VueKeycloakInstance,
+  VueKeycloakOptions,
+  VueKeycloakConfig,
+  VueKeycloakTokenParsed
+} from './types'
