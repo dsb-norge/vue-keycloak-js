@@ -83,7 +83,7 @@ function defaultEmptyVueKeycloakInstance(): VueKeycloakInstance {
 
 async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstance>, options: VueKeycloakOptions) {
   const keycloak = new Keycloak(config)
-  const { updateInterval } = options
+  const { updateInterval, autoRefreshToken = true } = options
 
   function updateWatchVariables(isAuthenticated = false) {
     store.authenticated = isAuthenticated
@@ -126,6 +126,9 @@ async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstan
   }
 
   keycloak.onAuthSuccess = function () {
+    if (!autoRefreshToken) {
+      return;
+    }
     const updateTokenInterval = setInterval(
       () => {
         keycloak.updateToken(60)
