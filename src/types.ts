@@ -29,8 +29,9 @@ export type VueKeycloakConfig = KeycloakConfig | string;
 export interface VueKeycloakOptions {
   config?: VueKeycloakConfig;
   init?: KeycloakInitOptions;
-  logout?: KeycloakLogoutOptions | undefined;
+  logout?: KeycloakLogoutOptions;
   updateInterval?: number;
+  autoRefreshToken?: boolean;
   onReady?: (
     keycloak: Keycloak,
     VueKeycloak?: VueKeycloakInstance
