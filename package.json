@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/dsb-norge/vue-keycloak-js",
   "dependencies": {
-    "keycloak-js": "26.1.4"
+    "keycloak-js": "26.1.5"
   },
   "keywords": [
     "vue",
@@ -28,8 +28,8 @@
     "@eslint/js": "9.24.0",
     "@vitejs/plugin-vue": "5.2.3",
     "eslint": "9.24.0",
-    "typescript": "5.4.2",
-    "typescript-eslint": "8.29.0",
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.29.1",
     "vite": "6.2.5",
     "vite-plugin-dts": "3.9.1",
     "vue": "3.5.13"
