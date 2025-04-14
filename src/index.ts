@@ -127,7 +127,7 @@ async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstan
 
   keycloak.onAuthSuccess = function () {
     if (!autoRefreshToken) {
-      return;
+      return
     }
     const updateTokenInterval = setInterval(
       () => {
