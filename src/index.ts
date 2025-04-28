@@ -83,7 +83,7 @@ function defaultEmptyVueKeycloakInstance(): VueKeycloakInstance {
 
 async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstance>, options: VueKeycloakOptions) {
   const keycloak = new Keycloak(config)
-  const { updateInterval, autoRefreshToken = true } = options
+  const {  autoRefreshToken = true } = options
 
   function updateWatchVariables(isAuthenticated = false) {
     store.authenticated = isAuthenticated
@@ -126,29 +126,26 @@ async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstan
   }
 
   keycloak.onAuthSuccess = function () {
+    store.logoutFn = () => keycloak.logout(options.logout)
+  }
+
+  keycloak.onTokenExpired = () => {
     if (!autoRefreshToken) {
       return
     }
-    const updateTokenInterval = setInterval(
-      () => {
-        keycloak.updateToken(60)
-          .then((updated: boolean) => {
-            if (options.init?.enableLogging) {
-              console.log(`[vue-keycloak-js] Token ${updated ? 'updated' : 'not updated'}`)
-            }
-          })
-          .catch((error: unknown) => {
-            if (options.init?.enableLogging) {
-              console.log(`[vue-keycloak-js] Error while updating token: ${error}`)
-            }
-            keycloak.clearToken()
-          })},
-      updateInterval ?? 10000
-    )
-    store.logoutFn = () => {
-      clearInterval(updateTokenInterval)
-      return keycloak.logout(options.logout)
-    }
+
+    keycloak.updateToken(60)
+      .then((updated: boolean) => {
+        if (options.init?.enableLogging) {
+          console.log(`[vue-keycloak-js] Token ${updated ? 'updated' : 'not updated'}`)
+        }
+      })
+      .catch((error: unknown) => {
+        if (options.init?.enableLogging) {
+          console.log(`[vue-keycloak-js] Error while updating token: ${error}`)
+        }
+        keycloak.clearToken()
+      })
   }
 
   keycloak.onAuthRefreshSuccess = function () {
@@ -258,3 +255,4 @@ export type {
   VueKeycloakConfig,
   VueKeycloakTokenParsed
 } from './types'
+
