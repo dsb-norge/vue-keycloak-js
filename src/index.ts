@@ -126,27 +126,31 @@ async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstan
   }
 
   keycloak.onAuthSuccess = function () {
-    if (!autoRefreshToken) {
-      return
+    let updateTokenInterval: number | undefined;
+
+    if (autoRefreshToken) {
+      updateTokenInterval = setInterval(
+        () => {
+          keycloak.updateToken(60)
+            .then((updated: boolean) => {
+              if (options.init?.enableLogging) {
+                console.log(`[vue-keycloak-js] Token ${updated ? 'updated' : 'not updated'}`)
+              }
+            })
+            .catch((error: unknown) => {
+              if (options.init?.enableLogging) {
+                console.log(`[vue-keycloak-js] Error while updating token: ${error}`)
+              }
+              keycloak.clearToken()
+            })},
+        updateInterval ?? 10000
+      )
     }
-    const updateTokenInterval = setInterval(
-      () => {
-        keycloak.updateToken(60)
-          .then((updated: boolean) => {
-            if (options.init?.enableLogging) {
-              console.log(`[vue-keycloak-js] Token ${updated ? 'updated' : 'not updated'}`)
-            }
-          })
-          .catch((error: unknown) => {
-            if (options.init?.enableLogging) {
-              console.log(`[vue-keycloak-js] Error while updating token: ${error}`)
-            }
-            keycloak.clearToken()
-          })},
-      updateInterval ?? 10000
-    )
+
     store.logoutFn = () => {
-      clearInterval(updateTokenInterval)
+      if (updateTokenInterval) {
+        clearInterval(updateTokenInterval)
+      }
       return keycloak.logout(options.logout)
     }
   }
@@ -258,3 +262,4 @@ export type {
   VueKeycloakConfig,
   VueKeycloakTokenParsed
 } from './types'
+
