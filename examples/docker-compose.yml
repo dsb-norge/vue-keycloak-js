@@ -15,9 +15,9 @@ services:
       - -c
       - |
         /opt/keycloak/bin/kc.sh start-dev --import-realm &
-        KC_PID=$$!
+        KC_PID=$!
         /scripts/setup-master-realm.sh
         /scripts/add-user.sh --realm vue --username user --password user \
           --email user@test.dsb.no --email-verified true \
           --firstname Test --lastname User
-        wait $$KC_PID
+        wait $KC_PID
