@@ -108,7 +108,7 @@ async function init(config: VueKeycloakConfig, store: Reactive<VueKeycloakInstan
       store.resourceAccess = keycloak.resourceAccess
       store.refreshToken = keycloak.refreshToken
       store.refreshTokenParsed = keycloak.refreshTokenParsed
-      store.timeSkew = keycloak.timeSkew
+      store.timeSkew = keycloak.timeSkew ?? undefined
       store.responseMode = keycloak.responseMode
       store.responseType = keycloak.responseType
       store.tokenParsed = keycloak.tokenParsed
