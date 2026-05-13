@@ -21,7 +21,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name,
       formats: ['es', 'cjs', 'umd'],
-      fileName: (format) => `${name}.${format}.js`
+      fileName: (format) => format === 'cjs' ? `${name}.cjs` : `${name}.${format}.js`
     },
     rollupOptions: {
       external: ['vue', 'keycloak-js'],

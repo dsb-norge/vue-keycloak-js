@@ -37,7 +37,7 @@ fi
 DIR="$(dirname "$0")"
 "$DIR/wait-for-keycloak.sh"
 
-EXISTING=$(/opt/keycloak/bin/kcadm.sh get users -r "$REALM" -q username="$USERNAME" --fields id --format csv --noquotes 2>/dev/null | tail -n +1 | head -n 1 || true)
+EXISTING=$(/opt/keycloak/bin/kcadm.sh get users -r "$REALM" -q username="$USERNAME" --fields id --format csv --noquotes 2>/dev/null | tail -n +2 | head -n 1 || true)
 
 if [ -n "$EXISTING" ]; then
   echo "User '$USERNAME' already exists in realm '$REALM', skipping."
