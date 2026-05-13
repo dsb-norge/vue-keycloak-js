@@ -5,8 +5,14 @@
 You must have a Keycloak server running somewhere, with the correct
 setup, eg. `redirectUri`, `clientId`, `realm` etc.
 
-Or you could run: `docker-compose up` in this directory and get a temporary working
-keycloak instance. **You need to register a new user on the initial login**
+Or you could run: `docker-compose up` in this directory and get a temporary working keycloak instance.
+
+> [!NOTE]
+> The keycloak instance will be set up with the following users:
+> - `admin` with password `admin`
+> - `user` with password `user`
+>
+> To administrate the keycloak instance, you can go to `http://localhost:8080/auth` and login with the admin user.
 
 ## Simple example
 
