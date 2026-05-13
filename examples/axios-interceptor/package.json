@@ -11,19 +11,17 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
-    "@dsb-norge/vue-keycloak-js": "3.0.2",
-    "axios": "1.8.4",
-    "vue": "3.5.13"
+    "@dsb-norge/vue-keycloak-js": "file:../..",
+    "axios": "1.16.0",
+    "vue": "3.5.34"
   },
   "devDependencies": {
-    "@tsconfig/node22": "22.0.1",
+    "@tsconfig/node22": "22.0.5",
     "@types/node": "22.14.0",
-    "@vitejs/plugin-vue": "5.2.3",
-    "@vue/tsconfig": "0.7.0",
-    "npm-run-all2": "7.0.2",
-    "typescript": "5.8.3",
-    "vite": "6.2.5",
-    "vite-plugin-vue-devtools": "7.7.2",
-    "vue-tsc": "2.2.8"
+    "@vitejs/plugin-vue": "6.0.6",
+    "@vue/tsconfig": "0.9.1",
+    "typescript": "6.0.3",
+    "vite": "8.0.10",
+    "vue-tsc": "3.2.8"
   }
 }

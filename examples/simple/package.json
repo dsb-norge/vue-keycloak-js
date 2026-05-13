@@ -9,12 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dsb-norge/vue-keycloak-js": "3.0.2",
-    "vue": "3.5.13"
+    "@dsb-norge/vue-keycloak-js": "file:../..",
+    "vue": "3.5.34"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "5.2.3",
-    "vite": "6.2.5",
-    "vite-plugin-vue-devtools": "7.7.2"
+    "@vitejs/plugin-vue": "6.0.6",
+    "vite": "8.0.10"
   }
 }
