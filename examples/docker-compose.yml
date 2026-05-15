@@ -8,4 +8,16 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     volumes:
       - "./vue_realm.json:/opt/keycloak/data/import/vue_realm.json"
-    command: start-dev --import-realm
+      - "./docker/scripts:/scripts:ro"
+    entrypoint: []
+    command:
+      - sh
+      - -c
+      - |
+        /opt/keycloak/bin/kc.sh start-dev --import-realm &
+        KC_PID=$$!
+        /scripts/setup-master-realm.sh
+        /scripts/add-user.sh --realm vue --username user --password user \
+          --email user@test.dsb.no --email-verified true \
+          --firstname Test --lastname User
+        wait $$KC_PID

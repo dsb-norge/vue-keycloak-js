@@ -4,10 +4,17 @@
   "author": "Norwegian Directorate for Civil Protection",
   "description": "A Keycloak plugin for Vue >= 3.x",
   "type": "module",
-  "main": "dist/dsb-vue-keycloak.cjs.js",
+  "main": "dist/dsb-vue-keycloak.cjs",
   "module": "dist/dsb-vue-keycloak.es.js",
   "browser": "dist/dsb-vue-keycloak.umd.js",
   "typings": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/dsb-vue-keycloak.es.js",
+      "require": "./dist/dsb-vue-keycloak.cjs"
+    }
+  },
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -25,14 +32,14 @@
     "keycloak"
   ],
   "devDependencies": {
-    "@eslint/js": "9.39.4",
-    "@vitejs/plugin-vue": "5.2.4",
-    "eslint": "9.39.4",
-    "typescript": "5.6.3",
-    "typescript-eslint": "8.59.2",
-    "vite": "6.4.2",
-    "vite-plugin-dts": "4.5.4",
-    "vue": "3.5.33"
+    "@eslint/js": "10.0.1",
+    "@vitejs/plugin-vue": "6.0.6",
+    "eslint": "10.3.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.59.3",
+    "vite": "8.0.10",
+    "vite-plugin-dts": "5.0.0",
+    "vue": "3.5.34"
   },
   "peerDependencies": {
     "vue": ">=3.0.0"
