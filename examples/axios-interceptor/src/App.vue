@@ -9,7 +9,7 @@ const requestHeaders = ref<AxiosResponseHeaders | Partial<unknown> | undefined>(
 
 function manuallyRefreshAccessToken() {
   // We set a high minValidity to force a token refresh
-  keycloak.keycloak.updateToken(5000)
+  keycloak.keycloak?.updateToken(5000)
 }
 
 async function doAuthenticatedRequest() {
