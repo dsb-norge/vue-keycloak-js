@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useKeycloak, type VueKeycloakInstance } from "@dsb-norge/vue-keycloak-js"
+import { useKeycloak } from "@dsb-norge/vue-keycloak-js"
 
-const keycloak: VueKeycloakInstance = useKeycloak()
+const keycloak = useKeycloak()
 
 function manuallyRefreshAccessToken() {
   // We set a high minValidity to force a token refresh
-  keycloak.keycloak.updateToken(5000)
+  keycloak.keycloak?.updateToken(5000)
 }
 </script>
 
