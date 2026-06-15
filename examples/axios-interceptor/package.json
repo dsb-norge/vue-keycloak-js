@@ -10,16 +10,16 @@
   },
   "dependencies": {
     "@dsb-norge/vue-keycloak-js": "file:../..",
-    "axios": "1.16.0",
-    "vue": "3.5.34"
+    "axios": "1.17.0",
+    "vue": "3.5.35"
   },
   "devDependencies": {
     "@tsconfig/node24": "24.0.4",
-    "@types/node": "24.12.4",
-    "@vitejs/plugin-vue": "6.0.6",
+    "@types/node": "24.13.1",
+    "@vitejs/plugin-vue": "6.0.7",
     "@vue/tsconfig": "0.9.1",
     "typescript": "6.0.3",
-    "vite": "8.0.10",
-    "vue-tsc": "3.2.8"
+    "vite": "8.0.16",
+    "vue-tsc": "3.3.4"
   }
 }
