@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@dsb-norge/vue-keycloak-js": "file:../..",
-    "axios": "1.17.0",
+    "axios": "1.20.0",
     "vue": "3.5.35"
   },
   "devDependencies": {
