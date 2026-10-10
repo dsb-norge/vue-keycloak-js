@@ -14,11 +14,11 @@
   },
   "devDependencies": {
     "@tsconfig/node24": "24.0.5",
-    "@types/node": "24.19.0",
+    "@types/node": "24.19.1",
     "@vitejs/plugin-vue": "6.0.9",
     "@vue/tsconfig": "0.9.1",
     "typescript": "6.0.3",
-    "vite": "8.3.1",
-    "vue-tsc": "3.3.11"
+    "vite": "8.3.2",
+    "vue-tsc": "3.3.12"
   }
 }
