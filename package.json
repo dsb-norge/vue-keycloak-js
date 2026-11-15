@@ -33,7 +33,7 @@
   ],
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@vitejs/plugin-vue": "6.0.10",
+    "@vitejs/plugin-vue": "6.0.11",
     "@vue/language-core": "3.3.14",
     "eslint": "10.14.0",
     "typescript": "6.0.3",
