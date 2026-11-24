@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@dsb-norge/vue-keycloak-js": "file:../..",
-    "vue": "3.5.45"
+    "vue": "3.5.46"
   },
   "devDependencies": {
     "@tsconfig/node24": "24.0.6",
